@@ -1,0 +1,6 @@
+{
+    "Admin": true,
+    "Seller": true,
+    "Client": true,
+    "UserRaffle": true
+}

@@ -1,0 +1,11 @@
+{
+    "name": "UserRaffle",
+    "alias": "userraffle",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\UserRaffle\\app\\Providers\\UserRaffleServiceProvider"
+    ],
+    "files": []
+}
