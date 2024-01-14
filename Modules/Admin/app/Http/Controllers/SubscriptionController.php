@@ -85,7 +85,8 @@ class SubscriptionController extends Controller
     {
         
         try{
-            $data = $this->userService->update($id);
+            $extra = ['is_new' => false];
+            $data = $this->userService->update($id,$extra);
             return response_update(['user' => $data, 'token' => JWToken::create($data->toArray())]);
         }catch(\Throwable $e){
             return response_error($e->getMessage(),200);

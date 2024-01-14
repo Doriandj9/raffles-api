@@ -4,6 +4,7 @@ namespace App\Models\Relationship;
 
 use App\Models\File;
 use App\Models\User;
+use Modules\Admin\app\Models\AuthorizationRaffle;
 
 trait UserRealationship {
 
@@ -19,5 +20,9 @@ trait UserRealationship {
         return $this->hasMany(File::class,'fileable_id','id')
         ->where('type','LIKE','%raffles_payment_plan%')
         ->orderBy('created_at', 'ASC');
+    }
+
+    public function authorizationRaffles(){
+        return $this->hasMany(AuthorizationRaffle::class,'user_id','id');
     }
 }

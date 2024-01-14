@@ -22,5 +22,9 @@ Route::prefix('admin')->middleware(['auth:sanctum'])->group(function () {
     Route::get('authentication/user', [UserController::class, 'userRaffles']);
     Route::resource('users',UserController::class);
     Route::patch('user/raffles/auth/{id}', [UserController::class,'updateAuth']);
+    Route::get('user/authorization/raffles',[UserController::class,'authRafflesPending']);
+    Route::get('user/authorization/raffles/{id}',[UserController::class,'authRafflePending']);
+    Route::patch('user/authorization/raffles/{id}',[UserController::class,'authRafflesPendingUpdate']);
+
 });
 

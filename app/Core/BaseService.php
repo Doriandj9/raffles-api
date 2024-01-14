@@ -8,9 +8,12 @@ use Illuminate\Support\Facades\Hash;
 class BaseService {
     protected Model $model;
 
-    public function save($extra = [])
+    public function save($extra = [], $withRequest = true)
     {
-        $this->model = $this->model->fill(request()->all());
+        if($withRequest ){
+            $this->model = $this->model->fill(request()->all());
+        }
+
         if(count($extra) > 0){
             foreach($extra as $key => $value){
                 $this->model->{$key} = $value;
@@ -23,10 +26,12 @@ class BaseService {
         return $this->model;
     }
 
-    public function update($id, $extra=[])
+    public function update($id, $extra=[],$withRequest = true)
     {
         $this->model =  $this->model->find($id);
-        $this->model->fill(request()->all());
+        if($withRequest){
+            $this->model->fill(request()->all());
+        }
         if(count($extra) > 0){
             foreach($extra as $key => $value){
                 $this->model->{$key} = $value;

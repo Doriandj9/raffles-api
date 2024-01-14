@@ -9,6 +9,8 @@ use App\Services\FileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Modules\Admin\app\Models\AuthorizationRaffle;
+use Modules\Admin\app\Services\AuthRafflesService;
 use Modules\Admin\app\Services\UserService;
 
 class UserController extends Controller
@@ -17,7 +19,8 @@ class UserController extends Controller
 
     public function __construct(
         private UserService $userService,
-        private FileService $fileService
+        private FileService $fileService,
+        private AuthRafflesService $authRafflesService
         )
     {
         $this->userService = $userService;
@@ -115,7 +118,58 @@ class UserController extends Controller
             $extra['path'] = $this->fileService->rafflesPayment($request->file('file'), $request->fileable_id);
             $extra['type'] = 'raffles_payment_plan';
             $data = $this->fileService->save($extra);
+            $dataAuthRaffles = [
+                'user_id' => $request->fileable_id,
+                'file_id' => $data->id
+            ];
+            $data2 = $this->authRafflesService->save($dataAuthRaffles,false);
+            $data3 = $this->userService->update($request->fileable_id,['organize_riffs' => false],false); 
             return response_create('OK');
+        }catch(\Throwable $e){
+            return response_error($e->getMessage(),200);
+        }
+    }
+
+    public function authRafflesPending(): JsonResponse
+    {
+        try {
+            $data = AuthorizationRaffle::where('is_active',1)
+            ->get();
+           return response_success($data);
+        } catch (\Throwable $e) {
+           return response_error($e->getMessage(),202);
+        }
+    }
+
+    public function authRafflePending($id): JsonResponse
+    {
+        try {
+            $data = AuthorizationRaffle::findOrFail($id);
+            return response_success($data);
+        } catch (\Throwable $e) {
+            return response_error($e->getMessage(),202);
+        }
+    }
+
+    public function authRafflesPendingUpdate(Request $request, $id): JsonResponse
+    {
+        try{
+            $extra1 = ['is_active' => false];
+            $extra2 = ['organize_riffs' => $request->organize_riffs];
+            $data1 = $this->authRafflesService->update($id, $extra1, false);
+            $data2 = $this->userService->update($request->user_id,$extra2,false); 
+            if(boolval($request->organize_riffs !== "true" ? 1 : 0  )){
+                $data2 = $this->userService->update($request->user_id,['is_new' => true]);
+                $template = 'emails.voucherfail';
+                sendEmail($data2->email,'Fallo la autenticacion del comprobante de pago',$template,[
+                    'user' => $data2,
+                    'observation' => $request->observation
+                ]);
+                return response_update($data2);
+            }
+            $template = 'emails.vouchersuccess';
+            sendEmail($data2->email,'Autenticacion correcta del comprobante de pago',$template,['user' => $data2]);
+            return response_update($data1);
         }catch(\Throwable $e){
             return response_error($e->getMessage(),200);
         }
