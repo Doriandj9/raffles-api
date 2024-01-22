@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Admin\app\Http\Controllers\SubscriptionController;
 use Modules\Admin\app\Http\Controllers\UserController;
-use Modules\UserRaffle\app\Http\Controllers\UserRaffleController;
+use Modules\UserRaffle\app\Http\Controllers\RaffleController;
 
 /*
     |--------------------------------------------------------------------------
@@ -24,6 +24,10 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function 
 
 Route::prefix('raffles')->middleware(['auth:sanctum'])->group(function () {
    Route::patch('subscriptions/plans/{id}',[SubscriptionController::class,'updateSubUser']);
-   Route::post('subscriptions/plans/voucher',[UserController::class,'createFilePaymentPlan']); 
+   Route::post('subscriptions/plans/voucher',[UserController::class,'createFilePaymentPlan']);
+   Route::resource('lottery',RaffleController::class);
+   Route::get('list/raffles/{taxid}',[RaffleController::class,'listForItems']);
 });
+
+
 

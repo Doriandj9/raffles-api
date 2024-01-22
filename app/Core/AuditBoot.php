@@ -9,7 +9,6 @@ trait AuditBoot {
         if (!app()->runningInConsole()){
             static::creating(function($model){
                 return $model->fill([
-                    'user_id' => auth()->id() ? auth()->id() : request()->user_id,
                     'created_by' => auth()->id() ? auth()->id() : request()->user_id,
                     'updated_by' => auth()->id() ? auth()->id() : request()->user_id,
                 ]);

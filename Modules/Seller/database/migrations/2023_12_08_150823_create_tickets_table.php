@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->string('code',120);
-            $table->text('qr_image');
+            $table->text('qr_image')->nullable();
             $table->boolean('is_buy')->default(false);
              //tablas foraneas 
              $table->unsignedBigInteger("raffles_id")->nullable();
