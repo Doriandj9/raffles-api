@@ -87,8 +87,12 @@ class RaffleController extends Controller
     public function show($id): JsonResponse
     {
         //
-
-        return response()->json($this->data);
+        try {
+            $data = Raffle::findOrFail($id);
+            return response_success($data);
+        } catch (\Throwable $e) {
+            return response_error($e->getMessage(),200);
+        }
     }
 
     /**
