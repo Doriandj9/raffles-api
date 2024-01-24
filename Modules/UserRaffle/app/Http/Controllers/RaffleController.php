@@ -127,4 +127,17 @@ class RaffleController extends Controller
             return response_error($th->getMessage());
         }
     }
+
+
+    public function indexRaffles(){
+        try {
+
+            $raffles = Raffle::where('is_complete',false)->get();
+
+            return response_success($raffles);
+            
+        } catch (\Throwable $th) {
+            return response_error($th->getMessage());
+        }
+    }
 }

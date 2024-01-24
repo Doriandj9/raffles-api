@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use Modules\Admin\app\Http\Controllers\SubscriptionController;
+use Modules\UserRaffle\app\Http\Controllers\RaffleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +23,5 @@ Route::get('subscriptions',[SubscriptionController::class,'getActives']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [AuthController::class,'logout']);
 });
+
+Route::get('public/raffles', [RaffleController::class,'indexRaffles']);
