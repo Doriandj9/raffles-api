@@ -18,9 +18,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/config',function(){
+Route::get('/migrate',function(){
 
     Artisan::call('migrate');
 
     return response_success('ok');
+});
+
+Route::get('/refresh-config', function(){
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+    Artisan::call('cache:clear');
+    return response_success('ok');
+
 });
