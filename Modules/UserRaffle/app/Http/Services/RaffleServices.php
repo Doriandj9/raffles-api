@@ -30,6 +30,7 @@ class RaffleServices extends BaseService {
         for($i = 0; $i < intval($raffle->number_tickets); $i++){
             $code = $date->year . '-' . $date->timestamp . '-' . $raffle->id . '-' . ($i + 1);
             $info['code'] = $code;
+            $info['order'] = $i + 1;
             array_push($data, $info);
         }
 

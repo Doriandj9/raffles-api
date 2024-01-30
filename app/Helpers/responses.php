@@ -17,11 +17,11 @@ if(!function_exists('response_success')){
 
 if(!function_exists('response_create')){
 
-    function response_create($data, $additional = []){
+    function response_create($data, $additional = [], $message = null){
 
         $response = [
             'status' => true,
-            'message' => 'Recurso creado correctamente.',
+            'message' => $message ? $message : 'Recurso creado correctamente.',
             'data' => $data
         ];
         $result = array_merge($response,$additional);

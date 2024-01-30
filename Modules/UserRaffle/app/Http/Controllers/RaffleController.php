@@ -7,6 +7,7 @@ use App\Traits\FileHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Modules\Client\app\Models\Ticket;
 use Modules\UserRaffle\app\Http\Requests\RaffleRequest;
 use Modules\UserRaffle\app\Http\Services\RaffleServices;
 use Modules\UserRaffle\app\Models\Raffle;
@@ -135,6 +136,19 @@ class RaffleController extends Controller
             $raffles = Raffle::where('is_complete',false)->get();
 
             return response_success($raffles);
+            
+        } catch (\Throwable $th) {
+            return response_error($th->getMessage());
+        }
+    }
+
+    public function showTicketsByRaffle($id) {
+        try {
+
+            $tickets = Ticket::where('raffles_id',$id)
+            ->orderBy('order', 'asc')
+            ->get();
+            return response_success($tickets);
             
         } catch (\Throwable $th) {
             return response_error($th->getMessage());

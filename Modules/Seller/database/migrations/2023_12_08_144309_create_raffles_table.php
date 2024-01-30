@@ -27,7 +27,7 @@ return new class extends Migration
               //tablas foraneas 
               $table->unsignedBigInteger("subscriptions_id")->nullable();
               $table->foreign('subscriptions_id')->references('id')->on('subscriptions')->onDelete('RESTRICT');
-              $table->string("user_taxid",40)->nullable()->unsigned();
+              $table->string("user_taxid",40);
               $table->foreign('user_taxid')->references('taxid')->on('users')->onDelete('RESTRICT');
               //campos de auditoria 
               $table->unsignedBigInteger("created_by")->nullable();

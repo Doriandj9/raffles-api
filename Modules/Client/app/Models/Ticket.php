@@ -2,11 +2,11 @@
 
 namespace Modules\Client\app\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Core\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Client\Database\factories\TicketFactory;
 
-class Ticket extends Model
+class Ticket extends BaseModel
 {
     use HasFactory;
 

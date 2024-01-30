@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Client\app\Http\Controllers\PaymentTicketController;
 
 /*
     |--------------------------------------------------------------------------
@@ -19,4 +20,4 @@ Route::middleware(['auth:sanctum'])->prefix('client')->name('api.')->group(funct
     Route::get('user', fn (Request $request) => response()->json(['test' => 1]));
 });
 
-Route::get('client', fn (Request $request) => response()->json(['prueba' => 'asdas']));
+Route::resource('payment/raffle',PaymentTicketController::class);

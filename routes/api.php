@@ -25,3 +25,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::get('public/raffles', [RaffleController::class,'indexRaffles']);
+Route::get('public/raffles/{id}', [RaffleController::class,'show']);
+Route::get('public/raffles/tickets/{id}',[RaffleController::class,'showTicketsByRaffle']);
