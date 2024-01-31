@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->string('title',80);
-            $table->string('subject',120);
+            $table->string('subject',500);
             $table->text('description');
             $table->boolean('is_active')->default(true);
             $table->integer('number_raffles')->default(0);
