@@ -4,11 +4,12 @@ namespace Modules\Client\app\Models;
 
 use App\Core\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Client\app\Models\Realationship\TicketsRealationship;
 use Modules\Client\Database\factories\TicketFactory;
 
 class Ticket extends BaseModel
 {
-    use HasFactory;
+    use HasFactory,TicketsRealationship;
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +24,8 @@ class Ticket extends BaseModel
         'created_at',
         'updated_at'
     ];
+    protected  $with = ['raffle'];
+
     
     protected static function newFactory(): TicketFactory
     {

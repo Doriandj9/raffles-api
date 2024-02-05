@@ -21,6 +21,7 @@ Route::post('register',[AuthController::class,'register']);
 Route::post('register/confirm/{id}',[AuthController::class,'confirRegister']);
 Route::get('subscriptions',[SubscriptionController::class,'getActives']);
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('refresh/user',[AuthController::class,'refresh']);
     Route::post('logout', [AuthController::class,'logout']);
 });
 

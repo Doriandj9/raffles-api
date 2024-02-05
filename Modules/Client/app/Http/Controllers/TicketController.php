@@ -5,6 +5,7 @@ namespace Modules\Client\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modules\Client\app\Models\Ticket;
 
 class TicketController extends Controller
 {
@@ -58,5 +59,16 @@ class TicketController extends Controller
         //
 
         return response()->json($this->data);
+    }
+
+
+    public function showByUser($taxid){
+        try {
+            $data = Ticket::where('user_taxid', $taxid)
+            ->get();
+            return response_success($data);
+        } catch (\Throwable $th) {
+           return response_error($th->getMessage());
+        }
     }
 }

@@ -106,6 +106,27 @@ class AuthController extends Controller
         $data = $this->service->update($id, $extra);
         return response_success($data);
     }
+
+    public function refresh(){
+        try {
+            $user = auth()->user();
+            if(!$user){
+                throw ValidationException::withMessages([
+                    'user' => 'No autenticate'
+                ]);
+            }
+            $user = $user->refresh();
+            $data = [
+                'user' => $user,
+                'token' => JWToken::create($user->toArray())
+            ];
+            
+            return response_success($data);
+
+        } catch (ValidationException $th) {
+            return response_error($e->getMessage(),200,['messages' => $e->validator->errors()]);
+        }
+    }
     
     public function logout(){
         auth()->user()->tokens()->delete();

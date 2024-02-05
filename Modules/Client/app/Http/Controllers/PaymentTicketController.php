@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\AuthService;
 use App\Traits\FileHandler;
 use ErrorException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -102,7 +103,9 @@ class PaymentTicketController extends Controller
 
         } catch (\Throwable $th) {
             DB::rollBack();
-            return response_error($th->getMessage());
+            $message = $th instanceof UniqueConstraintViolationException ? 'Error un usuario con el mismo número de cédula ya existe en la plataforma'
+            : $th->getMessage();
+            return response_error($message);
         }
     }
 

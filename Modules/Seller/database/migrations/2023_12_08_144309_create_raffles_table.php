@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('raffles', function (Blueprint $table) {
             $table->id();
             $table->string('name',120);
-            $table->date('draw_date');
+            $table->timestamp('draw_date');
             $table->boolean('is_active')->default(true);
             $table->boolean('is_complete')->default(false);
             $table->text('logo_raffles')->default('logo-raffle.png');

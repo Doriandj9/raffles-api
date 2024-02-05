@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Client\app\Http\Controllers\PaymentTicketController;
+use Modules\Client\app\Http\Controllers\TicketController;
 
 /*
     |--------------------------------------------------------------------------
@@ -15,9 +16,8 @@ use Modules\Client\app\Http\Controllers\PaymentTicketController;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('client')->name('api.')->group(function () {
-    Route::get('client', fn (Request $request) => $request->user())->name('client');
-    Route::get('user', fn (Request $request) => response()->json(['test' => 1]));
+Route::middleware(['auth:sanctum'])->prefix('client')->group(function () {
+    Route::get('me/tickets/{taxid}',[TicketController::class ,'showByUser']);
 });
 
 Route::resource('payment/raffle',PaymentTicketController::class);

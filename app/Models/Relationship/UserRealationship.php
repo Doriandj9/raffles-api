@@ -5,6 +5,9 @@ namespace App\Models\Relationship;
 use App\Models\File;
 use App\Models\User;
 use Modules\Admin\app\Models\AuthorizationRaffle;
+use Modules\Admin\app\Models\Subscription;
+use Modules\UserRaffle\app\Models\BankAccount;
+use Modules\UserRaffle\app\Models\Raffle;
 
 trait UserRealationship {
 
@@ -25,4 +28,17 @@ trait UserRealationship {
     public function authorizationRaffles(){
         return $this->hasMany(AuthorizationRaffle::class,'user_id','id');
     }
+
+    public function subscription(){
+        return $this->hasOne(Subscription::class,'id','subscription_id');
+    }
+
+    public function bankAccounts() {
+        return $this->hasMany(BankAccount::class,'user_id','id');
+    }
+
+    public function rafflesCreated() {
+        return $this->hasMany(Raffle::class,'user_taxid','taxid');
+    }
+
 }
