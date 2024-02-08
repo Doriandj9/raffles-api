@@ -96,6 +96,14 @@ class PaymentTicketController extends Controller
             $tickets = json_decode($receipt->description);
             Ticket::whereIn('id',$tickets)
             ->update(['user_taxid' => $user->taxid]);
+            $dataTickets = Ticket::whereIn('id',$tickets)->get();
+            $template = 'emails.payment-tickets';
+            sendEmail($user->email,'Compra de boletos HAYU24', $template,[
+                'tickets' => $dataTickets,
+                'raffle' => $raffle,
+                'user' => $user,
+                'receipt' => $receipt,
+            ]);
 
             $message = $newUser ? Messages::NEW_USER_PAYMENT_TICKET : Messages::USER_PAYMENT_TICKET;
             DB::commit();

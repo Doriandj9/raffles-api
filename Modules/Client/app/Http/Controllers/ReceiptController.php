@@ -75,8 +75,12 @@ class ReceiptController extends Controller
             $tickets = json_decode($data->description);
             Ticket::whereIn('id',$tickets)
             ->update(['is_buy' => true, 'updated_by' => auth()->user()->id]);
-            $template = 'emails.vouchersuccess';
-            sendEmail($user->email,'Autenticacion correcta del comprobante de pago',$template,['user' => $user]);
+            $dataTickets = Ticket::whereIn('id',$tickets)->get();
+            $template = 'emails.payment-tickets-aprove';
+            sendEmail($user->email,'Verificacion de boletos HAYU24', $template,[
+                'tickets' => $dataTickets,
+                'user' => $user,
+            ]);
             DB::commit();
             return response_update($data);
         } catch (\Throwable $th) {

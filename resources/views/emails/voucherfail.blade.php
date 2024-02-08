@@ -13,8 +13,5 @@ Para poder completar el tu plan, ten en cuenta la siguiente observación.
  <a class="text-xl font-bold italic" target="__blank" href="{{ env('APP_URL_FRONT') }}/security/login">Loguearse. </a> 
 </p>
 
-<br> Saludos, <br>
-El Equipo de HAYU 24
-</p>
 
 @endsection

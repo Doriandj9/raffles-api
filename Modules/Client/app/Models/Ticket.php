@@ -24,7 +24,7 @@ class Ticket extends BaseModel
         'created_at',
         'updated_at'
     ];
-    protected  $with = ['raffle'];
+    protected  $with = ['raffle','user'];
 
     
     protected static function newFactory(): TicketFactory

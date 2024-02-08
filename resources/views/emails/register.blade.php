@@ -15,8 +15,6 @@ Recuerda que estamos aquí para ayudarte en cada paso del camino. Si tienes algu
 </span>
 ¡Gracias por unirte a nosotros en este emocionante viaje! <br>
 <br>
-Saludos, <br>
-El Equipo de HAYU 24
-</p>
+
 
 @endsection

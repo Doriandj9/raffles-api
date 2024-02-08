@@ -100,7 +100,7 @@ class AuthController extends Controller
         if($user){
             $extra['is_pending'] = false;
         }
-        if($user && $user->is_raffles){
+        if($user && $user->is_raffles && !$user->is_is_pending){
             $extra['is_pending'] = true;
         }
         $data = $this->service->update($id, $extra);
@@ -125,6 +125,30 @@ class AuthController extends Controller
 
         } catch (ValidationException $th) {
             return response_error($e->getMessage(),200,['messages' => $e->validator->errors()]);
+        }
+    }
+
+    public function restorePasswords(Request $request){
+        try {
+            $user = User::where('email',$request->email)->first();
+            if(!$user){
+                return response_error('No dispones de una cuenta dentro de la plataforma.',200);
+            }
+
+            $template = 'emails.restore-password';
+            $user->password = null;
+            $user->save();
+            $code = base64_encode($user->id);
+                sendEmail($request->email,'Restauración de clave de acceso',$template,[
+                    'user' => $user,
+                    'url' => "security/register/confirm/$code"
+                ]);
+            return response_create($user,[],"
+                Estimado usuario, le informamos que se ha enviado un enlace a su correo electrónico para que pueda restablecer su contraseña. Por favor, revise su bandeja de entrada y proceda a restablecer su nueva contraseña.
+            ");
+        } catch (\Throwable $e) {
+            return response_error($e->getMessage(),200);
+
         }
     }
     

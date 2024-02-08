@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('is_buy')->default(false);
              //tablas foraneas 
              $table->unsignedBigInteger("raffles_id")->nullable();
-             $table->foreign('raffles_id')->references('id')->on('raffles')->onDelete('RESTRICT');
+             $table->foreign('raffles_id')->references('id')->on('raffles')->onDelete('CASCADE');
              $table->string("user_taxid",40)->nullable()->unsigned();
              $table->foreign('user_taxid')->references('taxid')->on('users')->onDelete('RESTRICT');
              //campos de auditoria 
