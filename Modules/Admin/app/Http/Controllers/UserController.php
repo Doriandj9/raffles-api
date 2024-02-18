@@ -6,6 +6,8 @@ use App\Core\JWToken;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\FileService;
+use App\Traits\FileHandler;
+use ErrorException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +18,7 @@ use Modules\Admin\app\Services\UserService;
 
 class UserController extends Controller
 {
+    use FileHandler;
     public array $data = [];
 
     public function __construct(
@@ -208,5 +211,23 @@ class UserController extends Controller
         //
 
         return response()->json($this->data);
+    }
+
+    public function storeAvatar(Request $request, $id) {
+        try{
+           if(!$request->hasFile('avatar')){
+                throw new ErrorException('Error no ha enviado una imagen.');
+           }
+           $user = auth()->user();
+           $ci = $user->taxid;
+           $type = 'avatars';
+           $uri = "users/$ci/$type";
+           $path = $this->storeFile($request->file('avatar'),$uri);
+           $data = ['avatar' => $path];
+           $this->userService->update($id,$data,false);
+           return response_update($data);
+        }catch(\Throwable $e){
+            return response_error($e->getMessage(),200);
+        }
     }
 }

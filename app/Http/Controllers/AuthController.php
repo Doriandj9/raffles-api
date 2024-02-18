@@ -107,7 +107,7 @@ class AuthController extends Controller
         if($user){
             $extra['is_pending'] = false;
         }
-        if($user && $user->is_raffles && !$user->is_is_pending){
+        if($user && $user->is_raffles && !$user->is_pending && $user->is_new){
             $extra['is_pending'] = true;
         }
         $data = $this->service->update($id, $extra);

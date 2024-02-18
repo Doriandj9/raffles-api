@@ -5,6 +5,7 @@ namespace Modules\UserRaffle\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Messages;
 use App\Traits\FileHandler;
+use Error;
 use ErrorException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -43,6 +44,7 @@ class RaffleController extends Controller
         
         try {
             DB::beginTransaction();
+            $this->validationsRaffes();
             $type = 'logos_raffles';
             $ci = auth()->user()->taxid;
             $uri = "users/$ci/$type";
@@ -176,5 +178,16 @@ class RaffleController extends Controller
         } catch (\Throwable $th) {
             return response_error($th->getMessage());
         }
+    }
+
+
+    private function validationsRaffes(): void
+    {
+        $user = auth()->user();
+        $raffles = Raffle::where('user_taxid',$user->taxid)->get();
+        if($raffles->count() === $user->subscription->number_raffles){
+            throw new ErrorException(Messages::NOT_PERMITE_MORE_RAFFLES);
+        }
+
     }
 }

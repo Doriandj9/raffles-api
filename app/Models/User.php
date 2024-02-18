@@ -30,6 +30,7 @@ class User extends Authenticatable
         'permission',
         'rol',
         'phone',
+        'is_new',
         'is_active',
         'is_pending',
         'is_client',

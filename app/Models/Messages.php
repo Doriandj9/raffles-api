@@ -45,4 +45,11 @@ class Messages extends Model
     public const NOT_PERMITE_DELETE_RAFFLE = "
     No pude borrar una rifa en la cual ya se registro compras de boletos.
     ";
+
+    public const NOT_PERMITE_MORE_ONE_ACCOUNT = "
+    Ya dispone de una cuenta bancaria, no puede ingresar otra cuenta.
+    ";
+    public const NOT_PERMITE_MORE_RAFFLES = "
+    No puede crear más rifas de las que le permite su plan de subscripción.
+    ";
 }

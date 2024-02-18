@@ -24,6 +24,7 @@ Route::get('subscriptions',[SubscriptionController::class,'getActives']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('refresh/user',[AuthController::class,'refresh']);
     Route::patch('user/profile/{id}',[UserController::class,'update']);
+    Route::post('user/avatar/{id}',[UserController::class,'storeAvatar']);
     Route::post('logout', [AuthController::class,'logout']);
 });
 

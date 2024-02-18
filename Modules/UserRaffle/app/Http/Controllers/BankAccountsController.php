@@ -3,10 +3,13 @@
 namespace Modules\UserRaffle\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Messages;
 use App\Traits\FileHandler;
+use ErrorException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Modules\UserRaffle\app\Http\Requests\BankAccounts as RequestsBankAccounts;
 use Modules\UserRaffle\app\Http\Services\BankAccountServices;
 use Modules\UserRaffle\app\Models\BankAccount;
@@ -39,6 +42,8 @@ class BankAccountsController extends Controller
     public function store(RequestsBankAccounts $request): JsonResponse
     {
         try {
+            DB::beginTransaction();
+            $this->validations();
             $additional= ['user_id' => auth()->user()->id];
             $ci = auth()->user()->taxid;
             $type = 'qr_bank_accoutns';
@@ -48,8 +53,10 @@ class BankAccountsController extends Controller
                 $additional['qr_image'] = $path;
             }
             $data = $this->bankAccountServices->save($additional);
+            DB::commit();
             return response_create($data);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response_error($th->getMessage(),200);
         }
     }
@@ -112,5 +119,17 @@ class BankAccountsController extends Controller
         } catch (\Throwable $e) {
             return response_error($e->getMessage(),200);
         }
+    }
+
+    public function validations(): void
+    {
+        $accounts = auth()->user()->bankAccounts;
+
+        foreach($accounts as $account){
+            if($account->is_account_local){
+                throw new ErrorException(Messages::NOT_PERMITE_MORE_ONE_ACCOUNT);
+            }
+        }
+
     }
 }
