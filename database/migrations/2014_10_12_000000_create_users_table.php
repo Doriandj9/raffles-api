@@ -38,6 +38,7 @@ return new class extends Migration
             $table->text('token')->nullable();
             $table->text('nationality')->nullable();
             $table->text('address')->nullable();
+            $table->text('avatar')->nullable();
             $table->boolean('send_email')->default(true);
             $table->string('verify_photo')->nullable();
             $table->timestamp('email_verified_at')->nullable();

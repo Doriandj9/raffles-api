@@ -22,6 +22,7 @@ class Subscription extends BaseModel
         'description',
         'number_raffles',
         'price',
+        'is_active',
         'is_unlimited',
         'minimum_tickets',
         'maximum_tickets',

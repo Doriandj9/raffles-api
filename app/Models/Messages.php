@@ -41,4 +41,8 @@ class Messages extends Model
     
     Va en contra de las normas de la plataforma.
     ";
+
+    public const NOT_PERMITE_DELETE_RAFFLE = "
+    No pude borrar una rifa en la cual ya se registro compras de boletos.
+    ";
 }

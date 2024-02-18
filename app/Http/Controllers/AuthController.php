@@ -34,6 +34,13 @@ class AuthController extends Controller
                 'pending' => ['Lamentamos informarte que no puedes acceder al sistema hasta que completes el proceso de confirmación en tu correo electrónico.'],
             ]);
         }
+        if($user && !$user->is_active){
+            throw ValidationException::withMessages([
+                'inactive' => [
+                    'Lamentamos informarle que se encuentra bloqueado de la plataforma.'
+                ]
+            ]);
+        }
         try {
             //code...
             if(!Auth::attempt($request->only(['email','password']))){

@@ -3,7 +3,9 @@
 namespace Modules\UserRaffle\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Messages;
 use App\Traits\FileHandler;
+use ErrorException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -111,9 +113,30 @@ class RaffleController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        //
+        try {
+            DB::beginTransaction();
 
-        return response()->json($this->data);
+            $raffle = Raffle::findOrFail($id);
+            $tickets = Ticket::where('raffles_id',$raffle->id)->get();
+            $tickets = $tickets->filter(function(Ticket $ticket, int $index){
+                return $ticket->user_taxid;
+            });
+            if(count($tickets) > 0){
+                throw new ErrorException(Messages::NOT_PERMITE_DELETE_RAFFLE);
+            }
+            $ticketsIds = [];
+            foreach($tickets as $ticket){
+                array_push($ticketsIds,$ticket->id);
+            }
+            Ticket::whereIn('id',$ticketsIds)->delete();
+            $raffle->delete();
+            DB::commit();
+            return response_success('OK');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response_error($th->getMessage());
+            
+        }
     }
 
     public function listForItems($taxid){

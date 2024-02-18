@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\FileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Modules\Admin\app\Models\AuthorizationRaffle;
 use Modules\Admin\app\Services\AuthRafflesService;
@@ -30,9 +31,14 @@ class UserController extends Controller
      */
     public function index(): JsonResponse
     {
-        //
-        
-        return response()->json($this->data);
+        try{
+            $data = $this->userService
+            ->where('is_admin', '!=', true)
+            ->paginate(1);
+            return response()->json($data);
+        }catch(\Throwable $e){
+            return response_error($e->getMessage(),200);
+        }
     }
 
     public function userRaffles(): JsonResponse
@@ -78,9 +84,28 @@ class UserController extends Controller
     public function update(Request $request, $id): JsonResponse
     {
         try{
+            DB::beginTransaction();
             $data = $this->userService->update($id);
-            return response_update(['user' => $data, 'token' => JWToken::create($data)]);
+            if($request->resetPassword){
+                $template = 'emails.reset-password';
+                sendEmail($data->email,'Restauracion de clave de acceso',$template,[
+                    'user' => $data,
+                    'password' => trim($request->password)
+                ]);
+            }
+            if($request->blockUser){
+                $template = 'emails.block-user';
+                $block = $request->is_active == 'true' ? 'Desbloqueo' : 'Bloqueado';
+                sendEmail($data->email,"$block de la plataforma",$template,[
+                    'user' => $data,
+                    'active' => $request->is_active == 'true' ? false : true
+                ]);
+            }
+            
+            DB::commit();
+            return response_update(['user' => $data, 'token' => JWToken::create($data->toArray())]);
         }catch(\Throwable $e){
+            DB::rollBack();
             return response_error($e->getMessage(),200);
         }
 

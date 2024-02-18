@@ -8,6 +8,7 @@
     ¡Gracias por su compra de la rifa <span style="font-weight: bold;">"{{ $data['raffle']->name }}"</span>
     <br>
     Nos complace confirmar que su compra ha sido procesada con éxito. <br>
+    La validación del comprobante de pago de sus boletos se vera reflejado en un tiempo máximo de 24 horas. <br>
     A continuación, encontrará los detalles de sus boletos adquiridos:
     <br> <br>
 </p>

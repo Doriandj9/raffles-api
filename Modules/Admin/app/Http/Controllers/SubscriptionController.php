@@ -77,8 +77,12 @@ class SubscriptionController extends Controller
     public function update(Request $request, $id): JsonResponse
     {
         //
-        $data = $this->subscriptionService->update($id);
-        return response()->json($this->data);
+        try{
+            $data = $this->subscriptionService->update($id);
+            return response_update($data);
+        }catch(\Throwable $e){
+            return response_error($e->getMessage(),200);
+        }
     }
 
     public function updateSubUser(Request $request, $id): JsonResponse
@@ -98,8 +102,12 @@ class SubscriptionController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        //
-
-        return response()->json($this->data);
+        try{
+            $data = Subscription::find($id);
+            $data->delete();
+            return response_update($data);  
+        }catch(\Throwable $e){
+            return response_error($e->getMessage(),200);
+        }
     }
 }

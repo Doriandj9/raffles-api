@@ -49,6 +49,9 @@
             <tr>
                 <td colspan="5" style="text-align: end; background-color: #ede9fe; padding-right: 25px;">
                                 <span style="font-size: 11px;"> Siguenos en nuestras redes sociales </span> <br>
+                                <a target="__blank" href="https://hayu24.ec/" className="text-gray-500 hover:text-gray-900 dark:hover:text-white dark:text-gray-400">
+                                    <img style="display: inline;" src="{{ asset('img/globe.png') }}" alt="facebbok">
+                                </a>
                                 <a target="__blank" href="https://www.facebook.com/digitaleducas.oficial" className="text-gray-500 hover:text-gray-900 dark:hover:text-white dark:text-gray-400">
                                     <img style="display: inline;" src="{{ asset('img/facebook.png') }}" alt="facebbok">
                                 </a>
