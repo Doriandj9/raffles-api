@@ -106,9 +106,16 @@ class BankAccountsController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        //
-
-        return response()->json($this->data);
+        try {
+            DB::beginTransaction();
+            $raffle = BankAccount::findOrFail($id);
+            $raffle->delete();
+            DB::commit();
+            return response_success('OK');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response_error($th->getMessage());
+        }
     }
 
 
