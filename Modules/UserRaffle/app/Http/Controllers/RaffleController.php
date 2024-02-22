@@ -185,7 +185,7 @@ class RaffleController extends Controller
     {
         $user = auth()->user();
         $raffles = Raffle::where('user_taxid',$user->taxid)->get();
-        if($raffles->count() === $user->subscription->number_raffles){
+        if($raffles->count() !== 0 && $raffles->count() === $user->subscription->number_raffles){
             throw new ErrorException(Messages::NOT_PERMITE_MORE_RAFFLES);
         }
 
