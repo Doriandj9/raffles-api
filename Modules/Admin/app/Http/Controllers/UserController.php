@@ -37,7 +37,7 @@ class UserController extends Controller
         try{
             $data = $this->userService
             ->where('is_admin', '!=', true)
-            ->paginate(1);
+            ->paginate(10);
             return response()->json($data);
         }catch(\Throwable $e){
             return response_error($e->getMessage(),200);
@@ -50,7 +50,7 @@ class UserController extends Controller
         $data = $this->userService
         ->where('is_raffles',true)
         ->where('is_active', true)
-        ->paginate(2);
+        ->paginate(10);
         
         return response()->json($data);
     }

@@ -48,6 +48,9 @@ class ReceiptController extends Controller
     {
         try {
             $data = Receipt::findOrFail($id);
+            $tickets = json_decode($data->description);
+            $dataTickets = Ticket::whereIn('id', $tickets)->get();
+            $data->tickets = $dataTickets;
             return response_success($data);
         } catch (\Throwable $th) {
            return response_error($th->getMessage());
