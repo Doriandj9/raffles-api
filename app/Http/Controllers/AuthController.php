@@ -9,6 +9,7 @@ use App\Services\AuthService;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -64,6 +65,7 @@ class AuthController extends Controller
     }
     public function register(RegisterRequest $request){
         try {
+            DB::beginTransaction();
             $additional = [
                 'is_raffles' => false
             ];
@@ -78,7 +80,14 @@ class AuthController extends Controller
                 $extra['verify_photo'] = $this->service->savePhoto($request->file('photo'), $request->taxid);
             }
             try {
-                $data = $this->service->save($extra);
+                if($request->change){
+                    $user = User::where('taxid',$request->taxid)->first();
+                    $dataUpdate = $request->only(['is_raffles','is_seller','is_pending']);
+                    $dataUpdate['verify_photo'] = $request->hasFile('photo') ? $extra['verify_photo'] : null;
+                    $data = $this->service->update($user->id,$dataUpdate,false);
+                }else{
+                    $data = $this->service->save($extra);
+                }
                 $template = 'emails.register';
                 $user = User::where('taxid',$request->taxid)->first();
                 $code = base64_encode($user->id);
@@ -86,13 +95,16 @@ class AuthController extends Controller
                     'user' => $user,
                     'url' => "security/register/confirm/$code"
                 ]);
+                DB::commit();
                 return response_create($data, $additional);
             } catch (UniqueConstraintViolationException $e) {
+                DB::rollBack();
                 return response_error('Error ya existe un registro con ese número de cédula o correo electronico.',
                 200,['messageSQL' => $e->getMessage()]);
             }
             
         } catch (ValidationException $e) {
+            DB::rollBack();
             return response_error($e->getMessage(),200,['messages' => $e->validator->errors()]);
         }
         

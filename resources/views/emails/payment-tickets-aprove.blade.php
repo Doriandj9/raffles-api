@@ -44,6 +44,14 @@
                {{ count($data['tickets']) }}
             </td>
         </tr>
+        <tr>
+            <td style="font-weight: bold;">
+                Fecha y hora de rifa: 
+            </td>
+            <td style="color: #003049; font-weight: bold;">
+               {{ $data['tickets'][0]->raffle->draw_date }}
+            </td>
+        </tr>
 </table>
 <p style="text-align: justify;">
     Recuerde que puede ingresar a la plataforma y consultar sus boletos en formato 

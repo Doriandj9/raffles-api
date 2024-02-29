@@ -50,6 +50,7 @@ class UserController extends Controller
         $data = $this->userService
         ->where('is_raffles',true)
         ->where('is_active', true)
+        ->orderBy('created_at','DESC')
         ->paginate(10);
         
         return response()->json($data);
@@ -138,6 +139,7 @@ class UserController extends Controller
     {
         $extra = [];
         try{
+            DB::beginTransaction();
             if(!$request->hasFile('file')){
                 throw ValidationException::withMessages([
                     'file' => 'No a ingresado el comprobante de pago.'
@@ -151,9 +153,36 @@ class UserController extends Controller
                 'file_id' => $data->id
             ];
             $data2 = $this->authRafflesService->save($dataAuthRaffles,false);
-            $data3 = $this->userService->update($request->fileable_id,['organize_riffs' => false],false); 
+            $startDate = now();
+            $endDate = now()->addMonth();
+            $startDayMonth = now()->startOfMonth();
+            $diffInDays = $startDate->diffInDays($endDate);
+
+            if($startDate->day !== $endDate->day){
+                $dateEnd = $startDayMonth->addMonth(); 
+                $endDayMonth = $dateEnd->endOfMonth();
+                $endDate = $endDayMonth;
+            }
+            $dataUser= [
+                'organize_riffs' => false,
+                'start_date_supcription' => now(),
+                'end_date_suscription' => $endDate,
+                'remaining_days_suscription' => $diffInDays,
+                'subscription_id' => $request->subscription_id
+            ];
+            $user = $this->userService->update($request->fileable_id,$dataUser,false); 
+            $plan = User::find($user->id);
+            $template = 'emails.plans';
+            sendEmail($user->email,'Actualizacion de plan suscripcion de rifas',$template,[
+                'user' => $user,
+                'sub' => $plan->subscription,
+                'startDate' => $startDate->format('Y/m/d'),
+                'endDate' => $endDate->format('Y/m/d'),
+            ]);
+            DB::commit();
             return response_create('OK');
         }catch(\Throwable $e){
+            DB::rollBack();
             return response_error($e->getMessage(),200);
         }
     }

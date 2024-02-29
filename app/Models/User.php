@@ -39,6 +39,8 @@ class User extends Authenticatable
         'is_admin',
         'start_date_supcription',
         'end_date_suscription',
+        'remaining_days_suscription',
+        'platform_notifications',
         'token',
         'nationality',
         'address',
