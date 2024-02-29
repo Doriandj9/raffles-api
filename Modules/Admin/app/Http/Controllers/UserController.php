@@ -191,6 +191,7 @@ class UserController extends Controller
     {
         try {
             $data = AuthorizationRaffle::where('is_active',1)
+            ->orderBy('created_at','DESC')
             ->get();
            return response_success($data);
         } catch (\Throwable $e) {
