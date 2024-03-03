@@ -4,9 +4,11 @@ namespace Modules\UserRaffle\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Messages;
+use App\Models\User;
 use App\Traits\FileHandler;
 use Error;
 use ErrorException;
+use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -76,6 +78,9 @@ class RaffleController extends Controller
             $dataDB['awards'] = json_encode($awards);
             $data = $this->raffleServices->save($dataDB,false);
             $raffles = $this->raffleServices->customSaveTickets($data);
+            $user = User::find(auth()->user()->id);
+            $user->raffles = ($user->raffles + 1);
+            $user->save();
 
             DB::commit();
             return response_success($data);
@@ -184,8 +189,12 @@ class RaffleController extends Controller
     private function validationsRaffes(): void
     {
         $user = auth()->user();
-        $raffles = Raffle::where('user_taxid',$user->taxid)->get();
-        if($raffles->count() !== 0 && $raffles->count() === $user->subscription->number_raffles){
+        $orgRaffles = User::find($user->id);
+        if($user->remaining_days_suscription <= 0 ){
+            throw new ErrorException(Messages::NOT_DAYS_SUBSCRIPTION);
+        }
+
+        if($orgRaffles->raffles === $user->subscription->number_raffles && $orgRaffles->raffles !== 0 ){
             throw new ErrorException(Messages::NOT_PERMITE_MORE_RAFFLES);
         }
 

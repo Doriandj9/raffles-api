@@ -52,4 +52,8 @@ class Messages extends Model
     public const NOT_PERMITE_MORE_RAFFLES = "
     No puede crear más rifas de las que le permite su plan de subscripción.
     ";
+
+    public const NOT_DAYS_SUBSCRIPTION = "
+    Por favor renueva tu plan para poder crear tu rifa.
+    ";
 }

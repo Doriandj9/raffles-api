@@ -27,6 +27,9 @@ class Raffles implements ShouldQueue
     public function handle(): void
     {
         //
-        sendEmail('dorian9armijos@mail.com','Test','emails.test',[]);
+        sendEmail('dorian9armijos@gmail.com','Test','emails.test',[]);
     }
+
+
+    
 }

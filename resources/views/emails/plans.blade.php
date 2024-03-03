@@ -36,6 +36,14 @@
                 {{ $data['endDate'] }}
             </td>
         </tr>
+        <tr>
+            <td style="font-weight: bold;">
+                Estado del Pago: 
+            </td>
+            <td style="color: #D62829; font-weight: bold; font-style: italic;">
+               Pendiente
+            </td>
+        </tr>
 </table>
 <p style="text-align: justify;">
     Recuerde que siempre puedes actualizar tu plan de rifas, 

@@ -33,6 +33,7 @@ return new class extends Migration
             $table->boolean('is_seller')->default(false);
             $table->boolean('is_admin')->default(false);
             $table->boolean('organize_riffs')->default(false);
+            $table->integer('raffles')->default(0);
             $table->date('start_date_supcription')->nullable();
             $table->date('end_date_suscription')->nullable();
             $table->integer('remaining_days_suscription')->default(0);

@@ -52,6 +52,14 @@
                ${{ $data['receipt']->total }}
             </td>
         </tr>
+        <tr>
+            <td style="font-weight: bold;">
+                Estado del Pago: 
+            </td>
+            <td style="color: #D62829; font-weight: bold; font-style: italic;">
+               Pendiente
+            </td>
+        </tr>
 </table>
 <p style="text-align: justify;">
     Recuerde que puede ingresar a la plataforma y consultar sus boletos en formato 

@@ -226,7 +226,13 @@ class UserController extends Controller
                 return response_update($data2);
             }
             $template = 'emails.vouchersuccess';
-            sendEmail($data2->email,'Autenticacion correcta del comprobante de pago',$template,['user' => $data2]);
+            $plan = User::find($data2->id);
+            sendEmail($data2->email,'Autenticacion correcta del comprobante de pago',$template,[
+                'user' => $data2,
+                'sub' => $plan->subscription,
+                'startDate' => $plan->start_date_supcription,
+                'endDate' => $plan->end_date_suscription,
+            ]);
             return response_update($data1);
         }catch(\Throwable $e){
             return response_error($e->getMessage(),200);

@@ -41,6 +41,7 @@ class User extends Authenticatable
         'end_date_suscription',
         'remaining_days_suscription',
         'platform_notifications',
+        'raffles',
         'token',
         'nationality',
         'address',
