@@ -56,4 +56,12 @@ class Messages extends Model
     public const NOT_DAYS_SUBSCRIPTION = "
     Por favor renueva tu plan para poder crear tu rifa.
     ";
+
+    public const NOT_ACCOUNT_PRESENT = "
+    Ingrese un método de compra antes de crear una rifa.
+    ";
+
+    public const NOT_ACCOUNT_PRESENT_PLAN= "
+    Ingrese un método de pago antes de crear un nuevo plan.
+    ";
 }

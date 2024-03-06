@@ -190,6 +190,11 @@ class RaffleController extends Controller
     {
         $user = auth()->user();
         $orgRaffles = User::find($user->id);
+
+        if($orgRaffles->bankAccounts->count() === 0){
+            throw new ErrorException(Messages::NOT_ACCOUNT_PRESENT);
+        }
+
         if($user->remaining_days_suscription <= 0 ){
             throw new ErrorException(Messages::NOT_DAYS_SUBSCRIPTION);
         }
