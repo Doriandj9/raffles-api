@@ -199,7 +199,7 @@ class RaffleController extends Controller
             throw new ErrorException(Messages::NOT_DAYS_SUBSCRIPTION);
         }
 
-        if($orgRaffles->raffles === $user->subscription->number_raffles && $orgRaffles->raffles !== 0 ){
+        if($orgRaffles->raffles >= $user->subscription->number_raffles && $orgRaffles->raffles !== 0 ){
             throw new ErrorException(Messages::NOT_PERMITE_MORE_RAFFLES);
         }
 
