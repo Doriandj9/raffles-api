@@ -18,7 +18,18 @@ trait FileHandler
      */
     public function storeFile(UploadedFile $file, $folder = 'avatar') {
         $name = Carbon::now()->format('Y_m_d_H_i_s')."_".$file->getClientOriginalName();
+        $exist = false;
+
+        if(file_exists("$this->storage_prefix/$foler")){
+            $exist = true;
+        }
+
         $file->storeAs("{$this->storage_prefix}/{$folder}", $name,['visibility' => 'public']);
+        
+        if(!$exist){
+            chmod("$this->storage_prefix/$foler",0755);
+        }
+
         return Storage::url($folder.'/'.$name);
     }
     /* public function storeFile(UploadedFile $file, $folder = 'avatar') {
