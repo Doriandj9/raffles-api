@@ -31,7 +31,6 @@ trait FileHandler
             $permissionFolder = "./../storage";
             Artisan::call('permissions:set', ['folder' => $permissionFolder]);
             $output = Artisan::output();
-            dd($output);
         }
 
         return Storage::url($folder.'/'.$name);
