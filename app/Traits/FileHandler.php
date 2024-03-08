@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Exception;
+use Illuminate\Support\Facades\Artisan;
 
 trait FileHandler
 {
@@ -27,7 +28,9 @@ trait FileHandler
         $file->storeAs("{$this->storage_prefix}/{$folder}", $name,['visibility' => 'public']);       
 
         if(!$exist){
-            chmod('./../storage',0755);
+            $permissionFolder = "/storage";
+            Artisan::call('permissions:set', ['folder' => $permissionFolder]);
+            $output = Artisan::output();
         }
 
         return Storage::url($folder.'/'.$name);

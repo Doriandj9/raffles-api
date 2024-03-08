@@ -10,6 +10,11 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    
+    protected $commands = [
+    // Otros comandos...
+    \App\Console\Commands\SetFolderPermissions::class,
+    ];
     /**
      * Define the application's command schedule.
      */
