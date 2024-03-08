@@ -27,7 +27,7 @@ trait FileHandler
         $file->storeAs("{$this->storage_prefix}/{$folder}", $name,['visibility' => 'public']);       
 
         if(!$exist){
-            chmod('./storage',0755);
+            chmod('./../storage',0755);
         }
 
         return Storage::url($folder.'/'.$name);
