@@ -28,9 +28,10 @@ trait FileHandler
         $file->storeAs("{$this->storage_prefix}/{$folder}", $name,['visibility' => 'public']);       
 
         if(!$exist){
-            $permissionFolder = "/storage";
+            $permissionFolder = "./../storage";
             Artisan::call('permissions:set', ['folder' => $permissionFolder]);
             $output = Artisan::output();
+            dd($output);
         }
 
         return Storage::url($folder.'/'.$name);
