@@ -24,10 +24,10 @@ trait FileHandler
             $exist = true;
         }
 
-        $file->storeAs("{$this->storage_prefix}/{$folder}", $name,['visibility' => 'public']);
-        
+        $file->storeAs("{$this->storage_prefix}/{$folder}", $name,['visibility' => 'public']);       
+
         if(!$exist){
-            chmod("$this->storage_prefix/$folder",0755);
+            chmod('./storage',0755);
         }
 
         return Storage::url($folder.'/'.$name);
