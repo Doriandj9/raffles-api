@@ -169,7 +169,7 @@ class RaffleController extends Controller
 
             $raffles = Raffle::where('is_complete',false)
             ->orderBy('created_at','desc')
-            ->paginate(1);
+            ->paginate(8);
 
             return response()->json($raffles);
             
