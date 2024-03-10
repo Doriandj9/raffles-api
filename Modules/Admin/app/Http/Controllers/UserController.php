@@ -37,6 +37,7 @@ class UserController extends Controller
         try{
             $data = $this->userService
             ->where('is_admin', '!=', true)
+            ->orderBy('last_name','ASC')
             ->paginate(10);
             return response()->json($data);
         }catch(\Throwable $e){

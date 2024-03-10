@@ -28,6 +28,7 @@ Route::prefix('raffles')->middleware(['auth:sanctum'])->group(function () {
    Route::patch('subscriptions/plans/{id}',[SubscriptionController::class,'updateSubUser']);
    Route::post('subscriptions/plans/voucher',[UserController::class,'createFilePaymentPlan']);
    Route::resource('lottery',RaffleController::class);
+   Route::post('custom/update/{id}',[RaffleController::class,'updateRaffle']);
    Route::get('list/raffles/{taxid}',[RaffleController::class,'listForItems']);
    Route::get('list/confirm/payment/{taxid}',[ReceiptController::class ,'showByUser']);
    Route::get('receipt/{id}',[ReceiptController::class,'show']);

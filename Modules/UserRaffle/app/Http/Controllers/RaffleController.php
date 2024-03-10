@@ -122,7 +122,7 @@ class RaffleController extends Controller
     {
         try {
             DB::beginTransaction();
-
+            $user = User::find(auth()->user()->id);
             $raffle = Raffle::findOrFail($id);
             $tickets = Ticket::where('raffles_id',$raffle->id)->get();
             $tickets = $tickets->filter(function(Ticket $ticket, int $index){
@@ -137,6 +137,9 @@ class RaffleController extends Controller
             }
             Ticket::whereIn('id',$ticketsIds)->delete();
             $raffle->delete();
+            $userRaffles = ($user->raffles - 1);
+            $user->raffles = $userRaffles;
+            $user->save();
             DB::commit();
             return response_success('OK');
         } catch (\Throwable $th) {
@@ -150,9 +153,10 @@ class RaffleController extends Controller
 
         try {
 
-            $raffles = Raffle::where('user_taxid',$taxid)->get();
-
-            return response_success($raffles);
+            $raffles = Raffle::where('user_taxid',$taxid)
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10);
+            return response()->json($raffles);
             
         } catch (\Throwable $th) {
             return response_error($th->getMessage());
@@ -163,9 +167,11 @@ class RaffleController extends Controller
     public function indexRaffles(){
         try {
 
-            $raffles = Raffle::where('is_complete',false)->get();
+            $raffles = Raffle::where('is_complete',false)
+            ->orderBy('created_at','desc')
+            ->paginate(1);
 
-            return response_success($raffles);
+            return response()->json($raffles);
             
         } catch (\Throwable $th) {
             return response_error($th->getMessage());
@@ -186,6 +192,51 @@ class RaffleController extends Controller
     }
 
 
+    public function updateRaffle(Request $request, $id){
+        try {
+            DB::beginTransaction();
+            $this->validationsRaffesUpdate();
+            $type = 'logos_raffles';
+            $ci = auth()->user()->taxid;
+            $uri = "users/$ci/$type";
+            $raffle = Raffle::find($id);
+            $updated = $this->raffleServices->updateCustomTickets($raffle,intval($request->more_tickets));
+
+            $dataDB = [
+                'name' => $request->name,
+                'draw_date' => $request->draw_date,
+                'description' => $request->description,
+                'summary' => $request->summary,
+                'price' => $request->price,
+                'commission_sellers' => $request->commission_sellers,
+                'number_tickets' => $updated ? (intval(request()->number_tickets) + intval(request()->more_tickets)) : $request->number_tickets,
+            ];
+
+            if($request->hasFile('logo_raffles')){
+                $path = $this->storeFile($request->file('logo_raffles'),$uri);
+                $dataDB['logo_raffles'] = $path;
+            }
+
+            $awards = json_decode($request->awards);
+            $type = 'awards';
+            $uri = "users/$ci/$type";
+            foreach($awards as $key => $award){
+                if($request->hasFile($award->imgId)){
+                    $path = $this->storeFile($request->file($award->imgId),$uri);
+                    $awards[$key]->path = $path;
+                }
+            }
+            $dataDB['awards'] = json_encode($awards);
+            $data = $this->raffleServices->update($id,$dataDB,false);
+            DB::commit();
+            return response_success($data);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response_error($e->getMessage());
+        }
+    }
+
+
     private function validationsRaffes(): void
     {
         $user = auth()->user();
@@ -201,6 +252,17 @@ class RaffleController extends Controller
 
         if($orgRaffles->raffles >= $user->subscription->number_raffles && $orgRaffles->raffles !== 0 ){
             throw new ErrorException(Messages::NOT_PERMITE_MORE_RAFFLES);
+        }
+
+    }
+
+    private function validationsRaffesUpdate(): void
+    {
+        $user = auth()->user();
+        $subscription = $user->subscription;
+
+        if((intval(request()->number_tickets) + intval(request()->more_tickets)) > $subscription->maximum_tickets){
+            throw new ErrorException(Messages::NOT_TICKET_FOR_CHANGE_PLAN);
         }
 
     }

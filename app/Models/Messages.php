@@ -64,4 +64,8 @@ class Messages extends Model
     public const NOT_ACCOUNT_PRESENT_PLAN= "
     Ingrese un método de pago antes de crear un nuevo plan.
     ";
+
+    public const NOT_TICKET_FOR_CHANGE_PLAN = "
+    Esta rifa fue creada con otro plan y no exceder el límite de tickets de ese plan.
+    ";
 }

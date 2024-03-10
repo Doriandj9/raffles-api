@@ -111,6 +111,8 @@ class AuthController extends Controller
     }
 
     public function confirRegister(Request $request, $id){
+        try {
+            DB::beginTransaction();
         $request->validate([
             'password' => 'required',
         ]);
@@ -119,11 +121,16 @@ class AuthController extends Controller
         if($user){
             $extra['is_pending'] = false;
         }
-        if($user && $user->is_raffles && !$user->is_pending && $user->is_new){
+        if($user && $user->is_raffles && $user->is_new  && $user->is_pending){
             $extra['is_pending'] = true;
         }
         $data = $this->service->update($id, $extra);
+        DB::commit();
         return response_success($data);
+    } catch (\Throwable $th) {
+       DB::rollBack();
+       return response_error($e->getMessage(),400,['messages' => $e->validator->errors()]);
+    }
     }
 
     public function refresh(){
