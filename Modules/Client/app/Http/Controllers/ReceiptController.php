@@ -66,12 +66,19 @@ class ReceiptController extends Controller
             DB::beginTransaction();
             $user = User::find($request->user_id);
             if(boolval($request->accept !== "true" ? 1 : 0  )){
-            
-                $template = 'emails.voucherfail';
+                $data = $this->receiptService->update($id, ['is_active' => false],false);
+                $tickets = json_decode($data->description);
+                Ticket::whereIn('id',$tickets)
+                ->update(['user_taxid' => null, 'updated_by' => auth()->user()->id]);
+                $dataTickets = Ticket::whereIn('id',$tickets)->get();
+                $template = 'emails.payment-tickets-faild';
                 sendEmail($user->email,'Fallo la veracidad del comprobante de pago',$template,[
                     'user' => $user,
+                    'tickets' => $dataTickets,
                     'observation' => $request->observation
                 ]);
+
+                DB::commit();
                 return response_update($user);
             }
             $data = $this->receiptService->update($id, ['is_active' => false],false);
