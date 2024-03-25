@@ -6,6 +6,7 @@ use Modules\Admin\app\Http\Controllers\SubscriptionController;
 use Modules\Admin\app\Http\Controllers\UserController;
 use Modules\Client\app\Http\Controllers\ReceiptController;
 use Modules\UserRaffle\app\Http\Controllers\BankAccountsController;
+use Modules\UserRaffle\app\Http\Controllers\CommissionsController;
 use Modules\UserRaffle\app\Http\Controllers\RaffleController;
 
 /*
@@ -35,6 +36,7 @@ Route::prefix('raffles')->middleware(['auth:sanctum'])->group(function () {
    Route::patch('receipt/{id}',[ReceiptController::class,'update']);
    Route::get('bank-accounts/user/{user_id}',[BankAccountsController::class,'showAccountsByUser']);
    Route::resource('me/bank-accounts',BankAccountsController::class);
+   Route::resource('commissions/seller',CommissionsController::class);
 });
 
 

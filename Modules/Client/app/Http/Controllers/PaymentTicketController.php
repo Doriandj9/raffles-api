@@ -14,6 +14,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Modules\Client\app\Models\Ticket;
 use Modules\Client\app\Services\ReceiptService;
+use Modules\Seller\app\Http\Services\SalesService;
+use Modules\Seller\app\Models\Commissions;
+use Modules\Seller\app\Models\Sales;
 use Modules\UserRaffle\app\Models\Raffle;
 
 class PaymentTicketController extends Controller
@@ -23,7 +26,8 @@ class PaymentTicketController extends Controller
 
     public function __construct(
         private AuthService $authService,
-        private ReceiptService $receiptService
+        private ReceiptService $receiptService,
+        private SalesService $salesService
     )
     {
     }
@@ -75,7 +79,15 @@ class PaymentTicketController extends Controller
             if(!$request->hasFile('voucher')){
                 throw new ErrorException(Messages::NOT_VOUCHER_PRESENT);
             }
+            
+            if($request->no_code == 'false'){
+              $response = $this->validateCode($request,$user);
+              if(is_array($response)){
+                return response_success([],$response);
+              }
 
+            }
+            
             $type = 'receipts';
             $uri = "users/$user->taxid/$type";
             $pathVoucher = $this->storeFile($request->file('voucher'),$uri);
@@ -94,6 +106,22 @@ class PaymentTicketController extends Controller
             $request->user_id = $user->id;
             $receipt = $this->receiptService->save($dataReceipt, false);
             $tickets = json_decode($receipt->description);
+            $ticketsPayments = Ticket::whereIn('id',$tickets)
+            ->whereNotNull('user_taxid')->get();
+            if($ticketsPayments->count() > 0){
+                $ticks = '';
+                $message = 'Sentimos los inconvenientes los siguientes boletos(';
+                foreach($ticketsPayments as $ticket){
+                    $ticks .= $ticket->order . ','; 
+                }
+
+                $ticks = rtrim($ticks,',');
+
+                $message .= $ticks . ') ya se encuentran reservados, por favor selecione otros boletos.';
+
+                throw new ErrorException($message);
+            }
+
             Ticket::whereIn('id',$tickets)
             ->update(['user_taxid' => $user->taxid]);
             $dataTickets = Ticket::whereIn('id',$tickets)->get();
@@ -159,5 +187,53 @@ class PaymentTicketController extends Controller
         return response()->json($this->data);
     }
 
+
+    private function validateCode(Request $request,$user){
+
+        if(!$request->has('seller_code')){
+            return;    
+        }
+
+        $commission = Commissions::where('code', $request->seller_code)
+        ->with(['raffle'])
+        ->first();
+        if(!$commission){
+            return [
+                'invalid_code' => true,
+                'message_code' => 'El código ingresado no existe.'
+            ];
+        }
+
+        if( $commission->status !== Commissions::STATUS_ACTIVE ){
+            return [
+                'invalid_code' => true,
+                'message_code' => 'El código ingresado no se encuentra activo.'
+            ];
+        
+        }
+        $tickets = json_decode($request->tickets);
+        $raffle = $commission->raffle;
+        $porcent = floatval($raffle->commission_sellers);
+        $price =  floatval($raffle->price);
+        $value = round($price * $porcent,2);
+        $dataTotal = [];
+        $date = now();
+        foreach($tickets as $ticket){
+            $data = [
+                'commissions_id' => $commission->id,
+                'tickets_id' => $ticket,
+                'is_sales_code' => true,
+                'value' => $value,
+                'created_by' => $user->id,
+                'updated_by' => $user->id,
+                'created_at' => $date,
+                'updated_at' => $date
+            ];
+           array_push($dataTotal,$data);
+        }
+
+        Sales::insert($dataTotal);       
+        
+    }
     
 }

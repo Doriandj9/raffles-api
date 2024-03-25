@@ -115,8 +115,8 @@ class ReceiptController extends Controller
         try {
             $data = Receipt::where('organizer_raffles_taxid', $taxid)
             ->where('is_active', true)
-            ->get();
-            return response_success($data);
+            ->paginate(10);
+            return response()->json($data);
         } catch (\Throwable $th) {
            return response_error($th->getMessage());
         }

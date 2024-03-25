@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Seller\app\Http\Controllers\CommissionsController;
+use Modules\Seller\app\Http\Controllers\RafflesController;
 
 /*
     |--------------------------------------------------------------------------
@@ -17,3 +19,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
     Route::get('seller', fn (Request $request) => $request->user())->name('seller');
 });
+
+Route::prefix('seller')->middleware(['auth:sanctum'])->group(function () {
+    Route::resource('raffles' ,RafflesController::class);
+    Route::get('commission/by-user/{taxid}',[CommissionsController::class,'byUser']);
+    Route::resource('me/commissions',CommissionsController::class);
+ });
+ 

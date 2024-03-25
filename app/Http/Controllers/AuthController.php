@@ -66,6 +66,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $request){
         try {
             DB::beginTransaction();
+            $user = User::where('taxid',$request->taxid)->first();
             $additional = [
                 'is_raffles' => false
             ];
@@ -76,7 +77,9 @@ class AuthController extends Controller
                         'photo' => 'No a ingresado la foto de verificación.'
                     ]);
                 }
-                $additional['is_raffles'] = true;
+                $additional['is_raffles'] = $user && !$user->is_pending 
+                && $request->is_seller == 'true' ?  false : true;
+
                 $extra['verify_photo'] = $this->service->savePhoto($request->file('photo'), $request->taxid);
             }
             try {
@@ -85,11 +88,12 @@ class AuthController extends Controller
                     $dataUpdate = $request->only(['is_raffles','is_seller','is_pending']);
                     $dataUpdate['verify_photo'] = $request->hasFile('photo') ? $extra['verify_photo'] : null;
                     $data = $this->service->update($user->id,$dataUpdate,false);
+                    DB::commit();
+                    return response_success($data);
                 }else{
                     $data = $this->service->save($extra);
                 }
                 $template = 'emails.register';
-                $user = User::where('taxid',$request->taxid)->first();
                 $code = base64_encode($user->id);
                 sendEmail($request->email,'Autentificacion de registro',$template,[
                     'user' => $user,

@@ -6,6 +6,7 @@ use App\Models\File;
 use App\Models\User;
 use Modules\Admin\app\Models\AuthorizationRaffle;
 use Modules\Admin\app\Models\Subscription;
+use Modules\Seller\app\Models\Commissions;
 use Modules\UserRaffle\app\Models\BankAccount;
 use Modules\UserRaffle\app\Models\Raffle;
 
@@ -39,6 +40,10 @@ trait UserRealationship {
 
     public function rafflesCreated() {
         return $this->hasMany(Raffle::class,'user_taxid','taxid');
+    }
+
+    public function commissions() {
+        return $this->hasMany(Commissions::class,'user_taxid','taxid');
     }
 
 }
