@@ -18,6 +18,7 @@ class Sales extends Model
         'tickets_id',
         'is_sales_code',
         'value',
+        'is_complete',
         'created_by',
         'updated_by'
     ];

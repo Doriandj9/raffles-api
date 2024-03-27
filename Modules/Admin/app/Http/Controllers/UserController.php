@@ -50,6 +50,8 @@ class UserController extends Controller
         //
         $data = $this->userService
         ->where('is_raffles',true)
+        ->orWhere('is_seller', true)
+        ->whereNotNull('verify_photo')
         ->where('is_active', true)
         ->orderBy('created_at','DESC')
         ->paginate(10);

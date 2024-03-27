@@ -32,7 +32,7 @@ class Commissions extends Model
         'updated_by',
     ];
 
-    protected $appends = ['total_commissions','tickets_sales'];
+    protected $appends = ['total_commissions','tickets_sales','tickets_pending'];
     
     protected static function newFactory(): CommissionsFactory
     {
@@ -42,7 +42,9 @@ class Commissions extends Model
 
     public function getTotalCommissionsAttribute(){
 
-        $commissions = Sales::where('commissions_id',$this->id)->get();
+        $commissions = Sales::where('commissions_id',$this->id)
+        ->where('is_complete',true)
+        ->get();
         $total = $commissions->sum(function($commission){
             return $commission->value;
         });
@@ -52,7 +54,18 @@ class Commissions extends Model
 
     public function getTicketsSalesAttribute(){
 
-        $commissions = Sales::where('commissions_id',$this->id)->get();
+        $commissions = Sales::where('commissions_id',$this->id)
+        ->where('is_complete',true)
+        ->get();
+
+        return $commissions->count();
+    }
+
+    public function getTicketsPendingAttribute(){
+
+        $commissions = Sales::where('commissions_id',$this->id)
+        ->where('is_complete',false)
+        ->get();
 
         return $commissions->count();
     }

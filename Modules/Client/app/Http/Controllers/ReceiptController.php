@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Client\app\Models\Receipt;
 use Modules\Client\app\Models\Ticket;
 use Modules\Client\app\Services\ReceiptService;
+use Modules\Seller\app\Models\Sales;
 
 class ReceiptController extends Controller
 {
@@ -70,6 +71,8 @@ class ReceiptController extends Controller
                 $tickets = json_decode($data->description);
                 Ticket::whereIn('id',$tickets)
                 ->update(['user_taxid' => null, 'updated_by' => auth()->user()->id]);
+                Sales::whereIn('tickets_id',$tickets)
+                ->delete();
                 $dataTickets = Ticket::whereIn('id',$tickets)->get();
                 $template = 'emails.payment-tickets-faild';
                 sendEmail($user->email,'Fallo la veracidad del comprobante de pago',$template,[
@@ -77,14 +80,16 @@ class ReceiptController extends Controller
                     'tickets' => $dataTickets,
                     'observation' => $request->observation
                 ]);
-
                 DB::commit();
                 return response_update($user);
             }
+
             $data = $this->receiptService->update($id, ['is_active' => false],false);
             $tickets = json_decode($data->description);
             Ticket::whereIn('id',$tickets)
             ->update(['is_buy' => true, 'updated_by' => auth()->user()->id]);
+            Sales::whereIn('tickets_id',$tickets)
+            ->update(['is_complete' => true,'updated_by' => auth()->user()->id]);
             $dataTickets = Ticket::whereIn('id',$tickets)->get();
             $template = 'emails.payment-tickets-aprove';
             sendEmail($user->email,'Verificacion de boletos HAYU24', $template,[

@@ -84,7 +84,6 @@ class AuthController extends Controller
             }
             try {
                 if($request->change){
-                    $user = User::where('taxid',$request->taxid)->first();
                     $dataUpdate = $request->only(['is_raffles','is_seller','is_pending']);
                     $dataUpdate['verify_photo'] = $request->hasFile('photo') ? $extra['verify_photo'] : null;
                     $data = $this->service->update($user->id,$dataUpdate,false);
@@ -94,9 +93,9 @@ class AuthController extends Controller
                     $data = $this->service->save($extra);
                 }
                 $template = 'emails.register';
-                $code = base64_encode($user->id);
+                $code = base64_encode($user ? $user->id : $data->id);
                 sendEmail($request->email,'Autentificacion de registro',$template,[
-                    'user' => $user,
+                    'user' => $user ? $user : $data,
                     'url' => "security/register/confirm/$code"
                 ]);
                 DB::commit();

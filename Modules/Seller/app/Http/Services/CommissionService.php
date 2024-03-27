@@ -24,7 +24,7 @@ class CommissionService extends BaseService {
 
         //El codigo esta conformado por los 3 ultimos digitos de la cedula,id de la rifa y el id del usuario
         $code = $last3digitsTaxid . $idRaffle . $userId . $numberRamdom;
-        $url= env('APP_URL_FRONT','localhost:5173') . '/payment/raffles/' . $raffle->id . '?seller_code=' . $code;
+        $url= env('APP_URL_FRONT') . '/payment/raffles/' . $raffle->id . '?seller_code=' . $code;
 
         $data = [
             'raffles_id' => $request->raffles_id,

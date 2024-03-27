@@ -15,12 +15,16 @@ return new class extends Migration
             $table->id();
             //tablas foraneas 
             $table->unsignedBigInteger("commissions_id")->nullable();
-            $table->foreign('commissions_id')->references('id')->on('commissions')->onDelete('CASCADE');
+            //$table->foreign('commissions_id')->references('id')->on('commissions')->onDelete('CASCADE');
             $table->unsignedBigInteger("tickets_id")->nullable();
-            $table->foreign('tickets_id')->references('id')->on('tickets')->onDelete('no action');
+            //$table->foreign('tickets_id')->references('id')->on('tickets')->onDelete('no action');
             $table->boolean('is_sales_code')->default(false);
             $table->boolean('is_complete')->default(false);
             $table->double('value');
+
+            $table->index('tickets_id','idx_code');
+
+
             //campos de auditoria 
             $table->unsignedBigInteger("created_by")->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('RESTRICT');
