@@ -82,6 +82,15 @@ class AuthController extends Controller
 
                 $extra['verify_photo'] = $this->service->savePhoto($request->file('photo'), $request->taxid);
             }
+
+            if(empty($additional['verify_photo']) && $request->is_seller){
+                if(!$request->hasFile('photo')){
+                    throw ValidationException::withMessages([
+                        'photo' => 'No a ingresado la foto de verificación.'
+                    ]);
+                }
+                $extra['verify_photo'] = $this->service->savePhoto($request->file('photo'), $request->taxid);
+            }
             try {
                 if($request->change){
                     $dataUpdate = $request->only(['is_raffles','is_seller','is_pending']);
