@@ -220,6 +220,14 @@ class PaymentTicketsController extends Controller
             ];
         
         }
+        if( $commission->seller_pos == false  ){
+            return [
+                'invalid_code' => true,
+                'message_code' => 'No tiene permisos para realizar ventas físicas en esta comisión.'
+            ];
+        
+        }
+
         $tickets = json_decode($request->tickets);
         $raffle = $commission->raffle;
         $porcent = floatval($raffle->commission_sellers);
