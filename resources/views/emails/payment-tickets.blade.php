@@ -7,8 +7,10 @@
 <p style="padding: 0px;">
     ¡Gracias por su compra de la rifa <span style="font-weight: bold;">"{{ $data['raffle']->name }}"</span>
     <br>
+    @if (empty($data['seller']))
     Nos complace confirmar que su compra ha sido procesada con éxito. <br>
     La validación del comprobante de pago de sus boletos se vera reflejado en un tiempo máximo de 24 horas. <br>
+    @endif
     A continuación, encontrará los detalles de sus boletos adquiridos:
     <br> <br>
 </p>
@@ -56,8 +58,8 @@
             <td style="font-weight: bold;">
                 Estado del Pago: 
             </td>
-            <td style="color: #D62829; font-weight: bold; font-style: italic;">
-               Pendiente
+            <td style="color: {{ empty($data['seller']) ? '#D62829' : '#003049' }}; font-weight: bold; font-style: italic;">
+               {{ empty($data['seller']) ? 'Pendiente' : 'Pagado'  }} 
             </td>
         </tr>
 </table>

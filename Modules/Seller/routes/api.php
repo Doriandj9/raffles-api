@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Seller\app\Http\Controllers\CommissionsController;
+use Modules\Seller\app\Http\Controllers\PaymentTicketsController;
 use Modules\Seller\app\Http\Controllers\RafflesController;
 
 /*
@@ -24,5 +25,7 @@ Route::prefix('seller')->middleware(['auth:sanctum'])->group(function () {
     Route::resource('raffles' ,RafflesController::class);
     Route::get('commission/by-user/{taxid}',[CommissionsController::class,'byUser']);
     Route::resource('me/commissions',CommissionsController::class);
+    Route::resource('receipts',PaymentTicketsController::class);
+    Route::get('sales/{taxid}',[PaymentTicketsController::class,'salesByUser']);
  });
  
