@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Seller\app\Models\Realationship\CommissionsRealationship;
 use Modules\Seller\Database\factories\CommissionsFactory;
+use Modules\UserRaffle\app\Models\Raffle;
 
 class Commissions extends Model
 {
@@ -16,6 +17,7 @@ class Commissions extends Model
     public const STATUS_DRAFT = 'DR'; //Borrado por defecto
     public const STATUS_DROP_OUT = 'DO'; //dado de baja por su decision
     public const STATUS_COMPLETE = 'CO'; // Cuando ya sido pagado su commision
+    private  $raffle;
     /**
      * The attributes that are mass assignable.
      */
@@ -32,7 +34,7 @@ class Commissions extends Model
         'updated_by',
     ];
 
-    protected $appends = ['total_commissions','tickets_sales','tickets_pending'];
+    protected $appends = ['total_commissions','tickets_pos','tickets_sales','tickets_pending','amount_paid','sales_physicals'];
     
     protected static function newFactory(): CommissionsFactory
     {
@@ -65,6 +67,35 @@ class Commissions extends Model
 
         $commissions = Sales::where('commissions_id',$this->id)
         ->where('is_complete',false)
+        ->get();
+
+        return $commissions->count();
+    }
+
+    public function getAmountPaidAttribute(){
+
+        $commissions = Sales::where('commissions_id',$this->id)
+        ->where('is_sales_code',false)
+        ->get();
+
+        return $commissions->count();
+    }
+
+    public function getSalesPhysicalsAttribute(){
+        if(!$this->raffle){
+            $this->raffle = Raffle::find($this->raffles_id);
+        }
+
+        $commissions = Sales::where('commissions_id',$this->id)
+        ->where('is_sales_code',false)
+        ->get();
+
+        return round($commissions->count() * $this->raffle->price,2);
+    }
+
+    public function getTicketsPosAttribute(){
+        $commissions = Sales::where('commissions_id',$this->id)
+        ->where('is_sales_code',true)
         ->get();
 
         return $commissions->count();

@@ -108,7 +108,7 @@ class PaymentTicketsController extends Controller
             // ingresamos las comisiones
             $response = $this->validateCode($request,auth()->user());
             if(is_array($response)){
-                return response_success([],$response);
+                return response_error($response['message_code']);
             }
             $dataTickets = Ticket::whereIn('id',$tickets)->get();
             $template = 'emails.payment-tickets';
@@ -241,6 +241,7 @@ class PaymentTicketsController extends Controller
                 'tickets_id' => $ticket,
                 'is_sales_code' => false,
                 'value' => $value,
+                'is_complete' => true,
                 'created_by' => $user->id,
                 'updated_by' => $user->id,
                 'created_at' => $date,

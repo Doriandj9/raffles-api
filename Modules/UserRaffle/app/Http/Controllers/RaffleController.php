@@ -183,8 +183,8 @@ class RaffleController extends Controller
 
             $tickets = Ticket::where('raffles_id',$id)
             ->orderBy('order', 'asc')
-            ->get();
-            return response_success($tickets);
+            ->paginate(200);
+            return response()->json($tickets);
             
         } catch (\Throwable $th) {
             return response_error($th->getMessage());
