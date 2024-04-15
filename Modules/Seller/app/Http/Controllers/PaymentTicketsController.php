@@ -10,6 +10,7 @@ use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Modules\Client\app\Models\Receipt;
 use Modules\Client\app\Models\Ticket;
 use Modules\Client\app\Services\ReceiptService;
 use Modules\Seller\app\Http\Services\SalesService;
@@ -81,7 +82,9 @@ class PaymentTicketsController extends Controller
                 'amount' => $request->amount,
                 'single_price' => $request->single_price,
                 'voucher' => '',
-                'is_active' => false
+                'is_active' => false,
+                'transaction' => true, 
+                'status' => Receipt::STATUS_CONFIRM
             ];
 
             $request->user_id = $user->id;

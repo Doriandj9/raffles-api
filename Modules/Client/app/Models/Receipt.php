@@ -11,6 +11,10 @@ class Receipt extends BaseModel
 {
     use HasFactory, ReceiptRealationship;
 
+    public const STATUS_CONFIRM = 'CO';
+    public const STATUS_CANCEL = 'CL';
+
+
     /**
      * The attributes that are mass assignable.
      */
@@ -24,6 +28,8 @@ class Receipt extends BaseModel
         'single_price',
         'voucher',
         'is_active',
+        'transaction',
+        'status',
         'created_by',
         'updated_by',
     ];

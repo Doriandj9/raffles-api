@@ -67,7 +67,7 @@ class ReceiptController extends Controller
             DB::beginTransaction();
             $user = User::find($request->user_id);
             if(boolval($request->accept !== "true" ? 1 : 0  )){
-                $data = $this->receiptService->update($id, ['is_active' => false],false);
+                $data = $this->receiptService->update($id, ['is_active' => false,'transaction' => true, 'status' => Receipt::STATUS_CANCEL],false);
                 $tickets = json_decode($data->description);
                 Ticket::whereIn('id',$tickets)
                 ->update(['user_taxid' => null, 'updated_by' => auth()->user()->id]);
@@ -84,7 +84,7 @@ class ReceiptController extends Controller
                 return response_update($user);
             }
 
-            $data = $this->receiptService->update($id, ['is_active' => false],false);
+            $data = $this->receiptService->update($id, ['is_active' => false,'transaction' => true, 'status' => Receipt::STATUS_CONFIRM],false);
             $tickets = json_decode($data->description);
             Ticket::whereIn('id',$tickets)
             ->update(['is_buy' => true, 'updated_by' => auth()->user()->id]);

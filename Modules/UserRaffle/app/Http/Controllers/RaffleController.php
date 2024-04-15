@@ -6,12 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Messages;
 use App\Models\User;
 use App\Traits\FileHandler;
-use Error;
 use ErrorException;
-use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Modules\Client\app\Models\Receipt;
 use Modules\Client\app\Models\Ticket;
 use Modules\UserRaffle\app\Http\Requests\RaffleRequest;
 use Modules\UserRaffle\app\Http\Services\RaffleServices;
@@ -233,6 +232,46 @@ class RaffleController extends Controller
         } catch (\Throwable $e) {
             DB::rollBack();
             return response_error($e->getMessage());
+        }
+    }
+
+    public function showReceiptsByUser($taxid){
+        try {
+            $data = Receipt::where('organizer_raffles_taxid', $taxid)
+            ->where('transaction', true)
+            ->paginate(10);
+
+            return response()->json($data);
+        } catch (\Throwable $th) {
+           return response_error($th->getMessage());
+        }
+    }
+
+    public function reSendEmail($receipt_id){
+        try {
+            $receipt = Receipt::find($receipt_id);
+            $user = User::find($receipt->user_id);
+            $tickets = json_decode($receipt->description);
+            $dataTickets = Ticket::whereIn('id',$tickets)->get();
+            if($receipt->status === Receipt::STATUS_CONFIRM){
+                $template = 'emails.payment-tickets-aprove';
+                sendEmail($user->email,'Verificacion de boletos HAYU24', $template,[
+                    'tickets' => $dataTickets,
+                    'user' => $user,
+                ]);
+
+                return response_success([]);
+            }
+
+            $template = 'emails.payment-tickets-faild';
+            sendEmail($user->email,'Fallo la veracidad del comprobante de pago',$template,[
+                    'user' => $user,
+                    'tickets' => $dataTickets,
+                    'observation' => 'Comprobante con errores.'
+                ]);
+            return response_success([]);
+        } catch (\Throwable $th) {
+            return response_error($th->getMessage());
         }
     }
 
