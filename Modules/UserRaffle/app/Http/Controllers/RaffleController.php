@@ -3,6 +3,7 @@
 namespace Modules\UserRaffle\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\Raffles;
 use App\Models\Messages;
 use App\Models\User;
 use App\Traits\FileHandler;
@@ -225,8 +226,15 @@ class RaffleController extends Controller
                     $awards[$key]->path = $path;
                 }
             }
+
             $dataDB['awards'] = json_encode($awards);
+            $dataChange = [
+                'Fecha del sorteo' => [$raffle->draw_date, $request->draw_date]
+            ];
             $data = $this->raffleServices->update($id,$dataDB,false);
+
+            //lanzamos envios de correos electronicos masivos
+            Raffles::dispatch($id,$dataChange);
             DB::commit();
             return response_success($data);
         } catch (\Throwable $e) {
