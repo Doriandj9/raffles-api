@@ -7,6 +7,7 @@ use App\Jobs\Raffles;
 use App\Models\Messages;
 use App\Models\User;
 use App\Traits\FileHandler;
+use Carbon\Carbon;
 use ErrorException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -234,7 +235,12 @@ class RaffleController extends Controller
             $data = $this->raffleServices->update($id,$dataDB,false);
 
             //lanzamos envios de correos electronicos masivos
-            Raffles::dispatch($id,$dataChange);
+            $date1 = Carbon::parse($dataChange['Fecha del sorteo'][0]);
+            $date2 = Carbon::parse($dataChange['Fecha del sorteo'][1]);
+
+            if($date1->format('Y-m-d H:i') !== $date2->format('Y-m-d H:i')){
+                Raffles::dispatch($id,$dataChange);
+            }
             DB::commit();
             return response_success($data);
         } catch (\Throwable $e) {

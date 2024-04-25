@@ -44,7 +44,7 @@ class Raffles implements ShouldQueue
        $users = User::whereIn('taxid', $userInRaffle->toArray())->get();
        $template = 'emails.update-raffles';
        foreach($users  as $user){
-           sendEmail($user->email,'Actualizacion de rifas.',$template,[
+           sendEmail($user->email,'Cambio de fecha para el sorteo de la rifa',$template,[
             'user' => $user,
             'raffle' => $raffle,
             'changes' => $this->dataChange
