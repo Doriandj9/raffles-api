@@ -3,6 +3,7 @@
 namespace Modules\UserRaffle\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\CompleteRaffle;
 use App\Jobs\Raffles;
 use App\Models\Messages;
 use App\Models\User;
@@ -111,9 +112,15 @@ class RaffleController extends Controller
      */
     public function update(Request $request, $id): JsonResponse
     {
-        //
-
-        return response()->json($this->data);
+        try {
+            DB::beginTransaction();
+            $data = $this->raffleServices->update($id); 
+            DB::commit();
+            return response_success($data);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response_error($th->getMessage());
+        }
     }
 
     /**
@@ -289,6 +296,19 @@ class RaffleController extends Controller
         }
     }
 
+    public function complete(Request $request, $id){
+        try {
+            DB::beginTransaction();
+            $data = $this->raffleServices->update($id); 
+            CompleteRaffle::dispatch($id);
+            DB::commit();
+            return response_success($data);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response_error($th->getMessage() . ' ' . $th->getMessage());
+        }
+    }
+
 
     private function validationsRaffes(): void
     {
@@ -319,4 +339,6 @@ class RaffleController extends Controller
         }
 
     }
+
+
 }

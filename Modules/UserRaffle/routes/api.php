@@ -39,6 +39,7 @@ Route::prefix('raffles')->middleware(['auth:sanctum'])->group(function () {
    Route::resource('commissions/seller',CommissionsController::class);
    Route::get('payments/receipts/{taxid}',[RaffleController::class,'showReceiptsByUser']);
    Route::post('payments/receipts/{receipt_id}',[RaffleController::class,'reSendEmail']);
+   Route::post('complete/{id}',[RaffleController::class,'complete']);
 });
 
 
