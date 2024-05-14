@@ -101,9 +101,13 @@ class RaffleController extends Controller
         //
         try {
             $data = Raffle::findOrFail($id);
+            if($data->is_complete){
+                throw new \Exception('Esta rifa no esta disponible');
+            }
+
             return response_success($data);
         } catch (\Throwable $e) {
-            return response_error($e->getMessage(),200);
+            return response_error($e->getMessage(),400);
         }
     }
 

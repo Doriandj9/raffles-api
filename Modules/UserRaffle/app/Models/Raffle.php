@@ -19,6 +19,7 @@ class Raffle extends BaseModel
         'name',
         'draw_date',
         'logo_raffles',
+        'is_complete',
         'user_taxid',
         'description',
         'number_tickets',
