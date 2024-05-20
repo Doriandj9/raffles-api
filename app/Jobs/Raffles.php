@@ -22,7 +22,9 @@ class Raffles implements ShouldQueue
      */
     public function __construct(
         private string | int $idRaffle,
-        private array $dataChange
+        private array $dataChange,
+        private string $template,
+        private string $subject
     ){
     }
 
@@ -42,9 +44,8 @@ class Raffles implements ShouldQueue
         return $ticket->user_taxid;
        });
        $users = User::whereIn('taxid', $userInRaffle->toArray())->get();
-       $template = 'emails.update-raffles';
        foreach($users  as $user){
-           sendEmail($user->email,'Cambio de fecha para el sorteo de la rifa',$template,[
+           sendEmail($user->email,$this->subject,$this->template,[
             'user' => $user,
             'raffle' => $raffle,
             'changes' => $this->dataChange

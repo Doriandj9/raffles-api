@@ -31,7 +31,8 @@ class Raffle extends BaseModel
         'created_by',
         'updated_by',
         'draw_parameters',
-        'draw_details'
+        'draw_details',
+        'in_sorter'
     ];
 
     protected $appends = ['purchased_tickets','pending_tickets','unsold_tickets'];

@@ -118,7 +118,10 @@ class RaffleController extends Controller
     {
         try {
             DB::beginTransaction();
-            $data = $this->raffleServices->update($id); 
+            $data = $this->raffleServices->update($id);
+            if($request->in_sorter == 'true' ? true : false){
+                Raffles::dispatch($id,[],'emails.update-raffles-link','Notificacion, ingreso al en vivo del sorteo de la rifa');
+            }
             DB::commit();
             return response_success($data);
         } catch (\Throwable $th) {
@@ -250,7 +253,7 @@ class RaffleController extends Controller
             $date2 = Carbon::parse($dataChange['Fecha del sorteo'][1]);
 
             if($date1->format('Y-m-d H:i') !== $date2->format('Y-m-d H:i')){
-                Raffles::dispatch($id,$dataChange);
+                Raffles::dispatch($id,$dataChange,'emails.update-raffles','Cambio de fecha para el sorteo de la rifa');
             }
             DB::commit();
             return response_success($data);
