@@ -143,19 +143,22 @@ class UserController extends Controller
         $extra = [];
         try{
             DB::beginTransaction();
-            if(!$request->hasFile('file')){
-                throw ValidationException::withMessages([
-                    'file' => 'No a ingresado el comprobante de pago.'
-                ]);
+            if(!$request->has('card_transaction')){
+                if(!$request->hasFile('file')){
+                    throw ValidationException::withMessages([
+                        'file' => 'No a ingresado el comprobante de pago.'
+                    ]);
+                }
+                $extra['path'] = $this->fileService->rafflesPayment($request->file('file'), $request->fileable_id);
+                $extra['type'] = 'raffles_payment_plan';
+                $data = $this->fileService->save($extra);
+                $dataAuthRaffles = [
+                    'user_id' => $request->fileable_id,
+                    'file_id' => $data->id
+                ];
+                $data2 = $this->authRafflesService->save($dataAuthRaffles,false);
             }
-            $extra['path'] = $this->fileService->rafflesPayment($request->file('file'), $request->fileable_id);
-            $extra['type'] = 'raffles_payment_plan';
-            $data = $this->fileService->save($extra);
-            $dataAuthRaffles = [
-                'user_id' => $request->fileable_id,
-                'file_id' => $data->id
-            ];
-            $data2 = $this->authRafflesService->save($dataAuthRaffles,false);
+
             $startDate = now();
             $endDate = now()->addMonth();
             $startDayMonth = now()->startOfMonth();
@@ -167,7 +170,7 @@ class UserController extends Controller
                 $endDate = $endDayMonth;
             }
             $dataUser= [
-                'organize_riffs' => false,
+                'organize_riffs' => $request->has('card_transaction'),
                 'start_date_supcription' => now(),
                 'end_date_suscription' => $endDate,
                 'remaining_days_suscription' => $diffInDays,
@@ -181,6 +184,7 @@ class UserController extends Controller
                 'sub' => $plan->subscription,
                 'startDate' => $startDate->format('Y/m/d'),
                 'endDate' => $endDate->format('Y/m/d'),
+                'cardTransaction' => $request->has('card_transaction')
             ]);
             DB::commit();
             return response_create('OK');

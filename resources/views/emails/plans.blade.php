@@ -40,8 +40,8 @@
             <td style="font-weight: bold;">
                 Estado del Pago: 
             </td>
-            <td style="color: #D62829; font-weight: bold; font-style: italic;">
-               Pendiente
+            <td style="color: {{ $data['cardTransaction'] ?  '#003049' : '#D62829'}}; font-weight: bold; font-style: italic;">
+               {{ $data['cardTransaction'] ?  'Pagado' : 'Pendiente'}}
             </td>
         </tr>
 </table>

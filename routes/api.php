@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use Modules\Admin\app\Http\Controllers\SubscriptionController;
 use Modules\Admin\app\Http\Controllers\UserController;
+use Modules\UserRaffle\app\Http\Controllers\PaymentController;
 use Modules\UserRaffle\app\Http\Controllers\RaffleController;
 
 /*
@@ -26,6 +27,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::patch('user/profile/{id}',[UserController::class,'update']);
     Route::post('user/avatar/{id}',[UserController::class,'storeAvatar']);
     Route::post('logout', [AuthController::class,'logout']);
+    Route::resource('card-transaction/plans',PaymentController::class);
 });
 
 Route::get('public/raffles', [RaffleController::class,'indexRaffles']);
