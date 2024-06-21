@@ -4,6 +4,7 @@ namespace Modules\UserRaffle\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\CompleteRaffle;
+use App\Jobs\NewRaffle;
 use App\Jobs\Raffles;
 use App\Models\Messages;
 use App\Models\User;
@@ -79,11 +80,11 @@ class RaffleController extends Controller
             }
             $dataDB['awards'] = json_encode($awards);
             $data = $this->raffleServices->save($dataDB,false);
-            $raffles = $this->raffleServices->customSaveTickets($data);
+            $tickets = $this->raffleServices->customSaveTickets($data);
             $user = User::find(auth()->user()->id);
             $user->raffles = ($user->raffles + 1);
             $user->save();
-
+            NewRaffle::dispatch($data->id);
             DB::commit();
             return response_success($data);
         } catch (\Throwable $e) {

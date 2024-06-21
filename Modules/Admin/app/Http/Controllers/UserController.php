@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Modules\Admin\app\Filters\UserFilter;
 use Modules\Admin\app\Models\AuthorizationRaffle;
 use Modules\Admin\app\Services\AuthRafflesService;
 use Modules\Admin\app\Services\UserService;
@@ -24,7 +25,8 @@ class UserController extends Controller
     public function __construct(
         private UserService $userService,
         private FileService $fileService,
-        private AuthRafflesService $authRafflesService
+        private AuthRafflesService $authRafflesService,
+        private UserFilter $filters
         )
     {
         $this->userService = $userService;
@@ -36,6 +38,7 @@ class UserController extends Controller
     {
         try{
             $data = $this->userService
+            ->filters($this->filters)
             ->where('is_admin', '!=', true)
             ->orderBy('last_name','ASC')
             ->paginate(10);

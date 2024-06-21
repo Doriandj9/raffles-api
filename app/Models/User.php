@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Filters\FilterBuilder;
 use App\Models\Relationship\UserRealationship;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -71,5 +72,10 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    protected $with = ['subscription','bankAccounts']; 
+    protected $with = ['subscription','bankAccounts'];
+    
+    public function scopeFilters($query, FilterBuilder $filter)
+    {
+        return $filter->apply($query);
+    }
 }

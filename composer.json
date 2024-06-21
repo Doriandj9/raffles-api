@@ -31,7 +31,8 @@
         },
         "files": [
             "app/Helpers/responses.php",
-            "app/Helpers/email.php"
+            "app/Helpers/email.php",
+            "app/Helpers/sanitizerHelper.php"
         ]
     },
     "autoload-dev": {
