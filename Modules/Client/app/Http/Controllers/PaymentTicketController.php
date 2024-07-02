@@ -59,14 +59,8 @@ class PaymentTicketController extends Controller
                $dataUser['is_client'] = true;
                $user = $this->authService->save($dataUser,false);
                $newUser = true;
-               $template = 'emails.register';
-               $code = base64_encode($user->id);
-                   sendEmail($request->email,'Autentificacion de registro',$template,[
-                       'user' => $user,
-                       'url' => "security/register/confirm/$code"
-                   ]);
             }
-            
+            $pathVoucher = 'N/A';
             if(!$this->validateUser($user)){
                 throw new ErrorException(Messages::DATA_USER_INCORRECT);
             }
@@ -76,7 +70,7 @@ class PaymentTicketController extends Controller
                 throw new ErrorException(Messages::USER_OWNER_RAFFLE);
             }
 
-            if(!$request->hasFile('voucher')){
+            if(!$request->has('credit_transaction') && !$request->hasFile('voucher')){
                 throw new ErrorException(Messages::NOT_VOUCHER_PRESENT);
             }
             
@@ -87,10 +81,15 @@ class PaymentTicketController extends Controller
               }
 
             }
-            
             $type = 'receipts';
             $uri = "users/$user->taxid/$type";
-            $pathVoucher = $this->storeFile($request->file('voucher'),$uri);
+            if($request->hasFile('voucher')){
+                $pathVoucher = $this->storeFile($request->file('voucher'),$uri);
+            }
+
+            if($request->has('credit_transaction')){
+                $this->transactionCredit($raffle);
+            }
 
             $dataReceipt  = [
                 'user_id' => $user->id,
@@ -121,17 +120,43 @@ class PaymentTicketController extends Controller
 
                 throw new ErrorException($message);
             }
+            $updateTickets = ['user_taxid' => $user->taxid];
+
+            if($request->has('credit_transaction')){
+                $updateTickets['is_buy']  = true;
+            }
 
             Ticket::whereIn('id',$tickets)
-            ->update(['user_taxid' => $user->taxid]);
+            ->update($updateTickets);
             $dataTickets = Ticket::whereIn('id',$tickets)->get();
-            $template = 'emails.payment-tickets';
-            sendEmail($user->email,'Compra de boletos HAYU24', $template,[
-                'tickets' => $dataTickets,
-                'raffle' => $raffle,
-                'user' => $user,
-                'receipt' => $receipt,
-            ]);
+
+            if($request->has('credit_transaction')){
+                $template = 'emails.payment-tickets';
+                sendEmail($user->email,'Compra de boletos HAYU24', $template,[
+                    'tickets' => $dataTickets,
+                    'raffle' => $raffle,
+                    'user' => $user,
+                    'receipt' => $receipt,
+                    'seller' => true
+                ]);
+            } else {
+                $template = 'emails.payment-tickets';
+                sendEmail($user->email,'Compra de boletos HAYU24', $template,[
+                    'tickets' => $dataTickets,
+                    'raffle' => $raffle,
+                    'user' => $user,
+                    'receipt' => $receipt,
+                ]);
+            }
+            
+            if($newUser){
+                $template = 'emails.register';
+                $code = base64_encode($user->id);
+                   sendEmail($request->email,'Autentificacion de registro',$template,[
+                       'user' => $user,
+                       'url' => "security/register/confirm/$code"
+                   ]);
+            }
 
             $message = $newUser ? Messages::NEW_USER_PAYMENT_TICKET : Messages::USER_PAYMENT_TICKET;
             DB::commit();
@@ -157,6 +182,13 @@ class PaymentTicketController extends Controller
 
     }
 
+    private function transactionCredit($raffle) {
+        $income = floatval($raffle->income);
+        $total =  floatval(request()->get('total'));
+        $value =  round(($income  +  $total),2);
+        $raffle->income = $value;
+        $raffle->save();
+    }
     /**
      * Show the specified resource.
      */
@@ -229,6 +261,9 @@ class PaymentTicketController extends Controller
                 'created_at' => $date,
                 'updated_at' => $date
             ];
+            if($request->has('credit_transaction')){
+                $data['is_complete'] = true;
+            }
            array_push($dataTotal,$data);
         }
 

@@ -29,6 +29,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [AuthController::class,'logout']);
     Route::resource('card-transaction/plans',PaymentController::class);
 });
+Route::resource('payment/tickets/card-transaction',PaymentController::class);
 
 Route::get('public/raffles', [RaffleController::class,'indexRaffles']);
 Route::get('public/raffles/{id}', [RaffleController::class,'show']);

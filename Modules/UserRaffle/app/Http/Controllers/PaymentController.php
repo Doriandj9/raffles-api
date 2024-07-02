@@ -4,6 +4,7 @@ namespace Modules\UserRaffle\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Services\CardTransactionService;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -51,7 +52,13 @@ class PaymentController extends Controller
            return response_success($transaction);
         } catch (\Throwable $th) {
             DB::rollBack();
-            return response_error($th->getMessage(),200);
+            $message = $th->getMessage();
+            $additional = [];
+            if($th instanceof  UniqueConstraintViolationException){
+                $message = 'Esta intentando ingresar a una transacción ya realizada anteriormente.';
+                $additional['error_unique'] = true;
+            }
+            return response_error($message,200,$additional);
         }
     }
 

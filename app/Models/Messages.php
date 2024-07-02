@@ -49,6 +49,9 @@ class Messages extends Model
     public const NOT_PERMITE_MORE_ONE_ACCOUNT = "
     Ya dispone de una cuenta bancaria, no puede ingresar otra cuenta.
     ";
+    public const NOT_PERMITE_MORE_ONE_ACCOUNT_PAYPHONE = "
+    Ya dispone de una cuenta payphone, no puede ingresar otra cuenta.
+    ";
     public const NOT_PERMITE_MORE_RAFFLES = "
     No puede crear más rifas de las que le permite su plan de subscripción.
     ";
@@ -67,5 +70,16 @@ class Messages extends Model
 
     public const NOT_TICKET_FOR_CHANGE_PLAN = "
     Esta rifa fue creada con otro plan y no exceder el límite de tickets de ese plan.
+    ";
+
+    public const NOT_INCOME_AMOUTN = "
+    No puede solicitar un monto mayor al existente.
+    ";
+
+    public const NOT_DRAFT_INCOME_COUNT = "
+    No puede realizar una nueva solicitud mientras tenga otras en estado pendiente.
+    ";
+    public const NOT_DELETE_INCOME_INPROGRESS = "
+    No puede eliminar una solicud mientras esta en progreso.
     ";
 }

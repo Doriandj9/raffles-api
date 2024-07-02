@@ -9,6 +9,7 @@ use Modules\Admin\app\Models\Subscription;
 use Modules\Seller\app\Models\Commissions;
 use Modules\UserRaffle\app\Models\BankAccount;
 use Modules\UserRaffle\app\Models\Raffle;
+use Modules\UserRaffle\app\Models\RequestIncome;
 
 trait UserRealationship {
 
@@ -44,6 +45,10 @@ trait UserRealationship {
 
     public function commissions() {
         return $this->hasMany(Commissions::class,'user_taxid','taxid');
+    }
+
+    public function requestIncomes(){
+        return $this->hasMany(RequestIncome::class,'user_id','id');
     }
 
 }

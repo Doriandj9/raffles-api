@@ -133,8 +133,12 @@ class BankAccountsController extends Controller
         $accounts = auth()->user()->bankAccounts;
 
         foreach($accounts as $account){
-            if($account->is_account_local){
+            if(!request()->has('is_account_local') && $account->is_account_local){
                 throw new ErrorException(Messages::NOT_PERMITE_MORE_ONE_ACCOUNT);
+            }
+
+            if(!$account->is_account_local){
+                throw new ErrorException(Messages::NOT_PERMITE_MORE_ONE_ACCOUNT_PAYPHONE);
             }
         }
 

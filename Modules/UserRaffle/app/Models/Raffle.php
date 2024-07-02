@@ -25,6 +25,7 @@ class Raffle extends BaseModel
         'number_tickets',
         'subscriptions_id',
         'summary',
+        'income',
         'price',
         'awards',
         'commission_sellers',

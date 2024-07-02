@@ -2,13 +2,13 @@
 
 namespace Modules\Seller\app\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Core\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Seller\app\Models\Realationship\CommissionsRealationship;
 use Modules\Seller\Database\factories\CommissionsFactory;
 use Modules\UserRaffle\app\Models\Raffle;
 
-class Commissions extends Model
+class Commissions extends BaseModel
 {
     use HasFactory,CommissionsRealationship;
 

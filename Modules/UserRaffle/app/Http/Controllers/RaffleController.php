@@ -168,8 +168,8 @@ class RaffleController extends Controller
     public function listForItems($taxid){
 
         try {
-
             $raffles = Raffle::where('user_taxid',$taxid)
+            ->where('is_complete',false)
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
             return response()->json($raffles);

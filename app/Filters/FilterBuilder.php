@@ -61,6 +61,13 @@ class FilterBuilder
         });
     }
 
+    public function whereClauseOr($field, $value, $operator = '=')
+    {
+        $this->builder->when($value, function (Builder $builder) use ($field, $value, $operator) {
+            $builder->orWhere($field, $operator, $value);
+        });
+    }
+
     public function groupSearch($value, array $params, \Closure $callback = null)
     {
         return $this->builder->when($value, function (Builder $builder) use ($params, $value, $callback) {

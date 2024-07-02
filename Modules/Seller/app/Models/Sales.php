@@ -2,12 +2,12 @@
 
 namespace Modules\Seller\app\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Core\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Seller\app\Models\Realationship\SalesRealationship;
 use Modules\Seller\Database\factories\SalesFactory;
 
-class Sales extends Model
+class Sales extends BaseModel
 {
     use HasFactory, SalesRealationship;
 

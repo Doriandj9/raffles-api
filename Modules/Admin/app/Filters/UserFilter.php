@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\DB;
 class UserFilter extends FilterBuilder
 {
 
-    public function lastName($last_name = null)
+    public function fullName($full_name = null)
     {
         
-        if ($last_name) {
-            $this->whereClause('last_name',"%{$last_name}%",'like');
+        if ($full_name) {
+            $this->whereClause('last_name',"%{$full_name}%",'like');          
         }
     }
 
@@ -24,15 +24,30 @@ class UserFilter extends FilterBuilder
         }
     }
 
+    public function filters($filters = null){
+        if($filters){
+            $filters = preg_replace('/&#34;/','"',$filters);
+            $data = json_decode($filters);
+
+            if($data->key === 'taxid'){
+                $this->taxid($data->value);
+            }
+
+            if($data->key === 'search'){
+                $this->search($data->value);
+            }
+        }
+    }
+
     public function search($search = null)
     {
         if($search){
             // $this->groupSearch($search, ['record']);
             $this->builder->when($search, function (Builder $builder) use ($search) {
-                $builder->whereRaw(DB::raw('organization_id IN (SELECT id FROM oae_organizations WHERE name LIKE ? OR business_name LIKE ?)'), ["%$search%", "%$search%"])
-                ->orWhere('record', "like", "%".$search."%");
-                
+                $builder->where('last_name','ilike',"%". $search ."%")
+                ->orWhere('first_name','ilike',"%". $search ."%");
             });
+
         }
     }
 

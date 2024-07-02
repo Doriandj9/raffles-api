@@ -8,6 +8,7 @@ use Modules\Client\app\Http\Controllers\ReceiptController;
 use Modules\UserRaffle\app\Http\Controllers\BankAccountsController;
 use Modules\UserRaffle\app\Http\Controllers\CommissionsController;
 use Modules\UserRaffle\app\Http\Controllers\RaffleController;
+use Modules\UserRaffle\app\Http\Controllers\RequestIncomeController;
 
 /*
     |--------------------------------------------------------------------------
@@ -40,6 +41,8 @@ Route::prefix('raffles')->middleware(['auth:sanctum'])->group(function () {
    Route::get('payments/receipts/{taxid}',[RaffleController::class,'showReceiptsByUser']);
    Route::post('payments/receipts/{receipt_id}',[RaffleController::class,'reSendEmail']);
    Route::post('complete/{id}',[RaffleController::class,'complete']);
+   Route::resource('income',RequestIncomeController::class);
+   Route::get('me/income/{id}',[RequestIncomeController::class,'getForUser']);
 });
 
 
