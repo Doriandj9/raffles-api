@@ -20,3 +20,5 @@ Si no has solicitado este cambio o consideras que ha sido realizado por error, p
 
 
 @endsection
+
+@section('mail', base64_encode($data['user']->email))

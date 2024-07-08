@@ -20,3 +20,5 @@ en la sección inferior se encuentran los contactos.'
 
 
 @endsection
+
+@section('mail', base64_encode($data['user']->email))

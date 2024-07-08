@@ -194,6 +194,21 @@ class RaffleController extends Controller
         }
     }
 
+    public function lastRaffles(){
+        try {
+
+            $raffles = Raffle::where('is_complete',false)
+            ->orderBy('draw_date','asc')
+            ->limit(3)
+            ->get();
+
+            return response_success($raffles);
+            
+        } catch (\Throwable $th) {
+            return response_error($th->getMessage());
+        }
+    }
+
     public function showTicketsByRaffle($id) {
         try {
 

@@ -45,11 +45,13 @@ class Raffles implements ShouldQueue
        });
        $users = User::whereIn('taxid', $userInRaffle->toArray())->get();
        foreach($users  as $user){
-           sendEmail($user->email,$this->subject,$this->template,[
-            'user' => $user,
-            'raffle' => $raffle,
-            'changes' => $this->dataChange
-           ]);
+        if($user->send_email == true){
+            sendEmail($user->email,$this->subject,$this->template,[
+             'user' => $user,
+             'raffle' => $raffle,
+             'changes' => $this->dataChange
+            ]);
+        }
        }
     }
 

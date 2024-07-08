@@ -39,3 +39,5 @@
 <hr>
 <br>
 @endsection
+
+@section('mail', base64_encode($data['user']->email))

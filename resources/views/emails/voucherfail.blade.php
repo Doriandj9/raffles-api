@@ -15,3 +15,5 @@ Para poder completar el tu plan, ten en cuenta la siguiente observación.
 
 
 @endsection
+
+@section('mail', base64_encode($data['user']->email))

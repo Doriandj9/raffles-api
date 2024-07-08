@@ -56,3 +56,5 @@ Si tienes alguna pregunta o necesitas asistencia, no dudes en contactarnos. ¡Di
 
 
 @endsection
+
+@section('mail', base64_encode($data['user']->email))

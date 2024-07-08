@@ -23,7 +23,7 @@ class PaymentTicketController extends Controller
 {
     use FileHandler;
     public array $data = [];
-
+    private array $copies = ['guanipating@yahoo.es','infoeducas@gmail.com'];
     public function __construct(
         private AuthService $authService,
         private ReceiptService $receiptService,
@@ -138,7 +138,7 @@ class PaymentTicketController extends Controller
                     'user' => $user,
                     'receipt' => $receipt,
                     'seller' => true
-                ]);
+                ],[],$this->copies);
             } else {
                 $template = 'emails.payment-tickets';
                 sendEmail($user->email,'Compra de boletos HAYU24', $template,[
@@ -146,13 +146,13 @@ class PaymentTicketController extends Controller
                     'raffle' => $raffle,
                     'user' => $user,
                     'receipt' => $receipt,
-                ]);
+                ],[],$this->copies);
             }
             
             if($newUser){
                 $template = 'emails.register';
                 $code = base64_encode($user->id);
-                   sendEmail($request->email,'Autentificacion de registro',$template,[
+                sendEmail($request->email,'Autentificacion de registro',$template,[
                        'user' => $user,
                        'url' => "security/register/confirm/$code"
                    ]);
@@ -160,7 +160,7 @@ class PaymentTicketController extends Controller
 
             $message = $newUser ? Messages::NEW_USER_PAYMENT_TICKET : Messages::USER_PAYMENT_TICKET;
             DB::commit();
-            return response_create($receipt,[],$message);
+            return response_create($receipt,['user' => $user],$message);
 
         } catch (\Throwable $th) {
             DB::rollBack();

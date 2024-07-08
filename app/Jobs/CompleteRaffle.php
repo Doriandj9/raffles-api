@@ -15,7 +15,6 @@ use Modules\UserRaffle\app\Models\Raffle;
 class CompleteRaffle implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     /**
      * Create a new job instance.
      */
@@ -56,11 +55,13 @@ class CompleteRaffle implements ShouldQueue
        
        foreach($users  as $user){
         $name = $raffle->name;
-        sendEmail($user->email, "Detalles del sorteo de la rifa $name",$template,[
-         'user' => $user,
-         'raffle' => $raffle,
-         'winners' => $awardsWinners
-        ]);
+        if($user->send_email == true){
+            sendEmail($user->email, "Detalles del sorteo de la rifa $name",$template,[
+             'user' => $user,
+             'raffle' => $raffle,
+             'winners' => $awardsWinners
+            ]);
+        }
     }
     }
 }

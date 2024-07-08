@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Admin\app\Http\Controllers\SubscriptionController as ControllersSubscriptionController;
 use Modules\Admin\app\Http\Controllers\UserController;
+use Modules\Client\app\Http\Controllers\RatingController;
 
 /*
     |--------------------------------------------------------------------------
@@ -25,6 +26,8 @@ Route::prefix('admin')->middleware(['auth:sanctum'])->group(function () {
     Route::get('user/authorization/raffles',[UserController::class,'authRafflesPending']);
     Route::get('user/authorization/raffles/{id}',[UserController::class,'authRafflePending']);
     Route::patch('user/authorization/raffles/{id}',[UserController::class,'authRafflesPendingUpdate']);
-
+    Route::get('rating',[RatingController::class, 'indexDisabled']);
+    Route::patch('rating/{id}',[RatingController::class,'update']);
+    Route::get('rating/{id}',[RatingController::class,'show']);
 });
 

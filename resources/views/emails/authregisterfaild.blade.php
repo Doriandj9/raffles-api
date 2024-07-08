@@ -16,3 +16,5 @@ Para poder completar el registro, ten en cuenta la siguiente observación.
 </p>
 
 @endsection
+
+@section('mail', base64_encode($data['user']->email))

@@ -6,6 +6,7 @@ use App\Models\File;
 use App\Models\User;
 use Modules\Admin\app\Models\AuthorizationRaffle;
 use Modules\Admin\app\Models\Subscription;
+use Modules\Client\app\Models\Rating;
 use Modules\Seller\app\Models\Commissions;
 use Modules\UserRaffle\app\Models\BankAccount;
 use Modules\UserRaffle\app\Models\Raffle;
@@ -51,4 +52,7 @@ trait UserRealationship {
         return $this->hasMany(RequestIncome::class,'user_id','id');
     }
 
+    public function ratings(){
+        return $this->hasMany(Rating::class,'user_id','id');
+    }
 }

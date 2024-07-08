@@ -13,6 +13,7 @@ class RequestIncome extends BaseModel
     public const STATUS_ACCEPT = 'AC';
     public const STATUS_CANCEL = 'CL';
     public const STATUS_INPROGRESS = 'DO';
+    public const STATUS_DELETE = 'DL';
     /**
      * The attributes that are mass assignable.
      */

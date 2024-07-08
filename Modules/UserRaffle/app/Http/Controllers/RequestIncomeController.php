@@ -41,12 +41,22 @@ class RequestIncomeController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
+            DB::beginTransaction();
             $this->validationStore();
             $user = auth()->user();
             $additional = ['user_id' => $user->id ];
             $data = $this->requestIncomeServices->save($additional);
+            $data->status = RequestIncome::STATUS_DRAFT;
+            $template = 'emails.solicitude-income';
+            sendEmail($user->email, 'Nueva solicitud de retiro de ingresos', $template,[
+                'user' => $user,
+                'request_income' => $data,
+                'raffle' => $data->raffle
+            ],[],['infoeducas@gmail.com','guanipating@yahoo.es']);
+            DB::commit();
             return response_create($data);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response_error($th->getMessage());
         }
     }
@@ -79,6 +89,17 @@ class RequestIncomeController extends Controller
                 $raffle->income = $value;
                 $raffle->save(); 
             }
+            $user = $data->user;
+            $template = 'emails.solicitude-income';
+            if($data->status !== RequestIncome::STATUS_INPROGRESS){
+                sendEmail($user->email, 'Actualizacion de retiro de ingresos', $template,[
+                    'user' => $user,
+                    'request_income' => $data,
+                    'raffle' => $data->raffle,
+                    'observation' => $request->observation
+                ],[],['infoeducas@gmail.com','guanipating@yahoo.es']);
+            }
+
             DB::commit();
             return response_update($data);
         } catch (\Throwable $th) {
@@ -109,7 +130,7 @@ class RequestIncomeController extends Controller
             if($requestIncome->status  === RequestIncome::STATUS_INPROGRESS){
                 throw new ErrorException(Messages::NOT_DELETE_INCOME_INPROGRESS);
             }
-            $this->requestIncomeServices->update($id,['is_active' => false],false);
+            $this->requestIncomeServices->update($id,['is_active' => false, 'status' => RequestIncome::STATUS_DELETE],false);
             return response_delete('OK');
         } catch (\Throwable $th) {
             return response_error($th->getMessage());

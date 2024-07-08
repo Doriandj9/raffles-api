@@ -38,8 +38,8 @@
                            <br>
                            Si no fue usted, por favor comuníquese con nosotros inmediatamente al correo: <a style="font-weight: bold;" href="mailto:soporte@hayu24.ec">soporte@hayu24.ec</a> <br>
                            Si recibes este correo es porque te suscribiste y/o registraste a <span style="font-weight: bold;">HAYU24.</span>
-                           <br>
-                           Puedes <a target="__blank" style="font-weight: bold;" href="{{env('APP_URL_FRONT') . '/not-recive/emails'}}">dejar de recibir correos promocionales</a>
+                           <br> 
+                           Puedes <a target="__blank" style="font-weight: bold;" href="{{env('APP_URL_FRONT') . '/not-recive/emails/'}}@yield('mail')">dejar de recibir correos promocionales</a>
                            <br>
                            Este correo ha sido enviado de forma automática y no requiere respuesta
                         </p>

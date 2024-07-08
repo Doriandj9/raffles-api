@@ -62,6 +62,20 @@ class UserController extends Controller
         return response()->json($data);
     }
 
+    public function notNotify(Request $request): JsonResponse
+    {
+        try {
+            $mail = base64_decode($request->email);
+            $user = $this->userService->where('email',$mail)->first();
+            $id = $user->id;
+            $payload = $request->only(['send_email']);
+            $data = $this->userService->update($id,$payload,false);
+            return response_success($data);
+        } catch (\Throwable $th) {
+            return response_error($th->getMessage());
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -109,6 +123,12 @@ class UserController extends Controller
                 sendEmail($data->email,"$block de la plataforma",$template,[
                     'user' => $data,
                     'active' => $request->is_active == 'true' ? false : true
+                ]);
+            }
+            if($request->editEmail){
+                $template = 'emails.change-mail';
+                sendEmail($data->email,"Cambio de correo electronico en la plataforma",$template,[
+                    'user' => $data
                 ]);
             }
             

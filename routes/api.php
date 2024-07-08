@@ -35,3 +35,5 @@ Route::get('public/raffles', [RaffleController::class,'indexRaffles']);
 Route::get('public/raffles/{id}', [RaffleController::class,'show']);
 Route::get('public/raffles/tickets/{id}',[RaffleController::class,'showTicketsByRaffle']);
 Route::post('public/recovery/password',[AuthController::class,'restorePasswords']);
+Route::get('public/last-raffles',[RaffleController::class,'lastRaffles']);
+Route::post('not-recibe/notify',[UserController::class,'notNotify']);

@@ -41,7 +41,9 @@ class NewRaffle implements ShouldQueue
                 'awards' => $awards,
                 'url' => "payment/raffles/$id"
             ];
-            sendEmail($user->email,'Un nuevo sueño una nueva rifa - HAYU24',$template,$data);
+            if($user->send_email == true){
+                sendEmail($user->email,'Un nuevo sueño una nueva rifa - HAYU24',$template,$data);
+            }
         }
        }
     );

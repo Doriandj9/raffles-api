@@ -18,3 +18,5 @@ Recuerda que estamos aquí para ayudarte en cada paso del camino. Si tienes algu
 
 
 @endsection
+
+@section('mail', base64_encode($data['user']->email))

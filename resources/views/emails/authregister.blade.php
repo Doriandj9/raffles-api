@@ -8,6 +8,6 @@ Has completado con éxito el proceso de autenticación. ¡Bienvenido al sistema!
 Si tienes alguna pregunta o necesitas asistencia, no dudes en contactarnos. ¡Disfruta de tu experiencia en nuestra plataforma y gracias por confiar en nosotros!
 
 <a class="text-xl font-bold italic" target="__blank" href="{{ env('APP_URL_FRONT') }}/security/login"> Ingresar al sistema </a> 
-
-
 @endsection
+
+@section('mail', base64_encode($data['user']->email))

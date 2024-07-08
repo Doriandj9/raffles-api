@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Client\app\Http\Controllers\PaymentTicketController;
+use Modules\Client\app\Http\Controllers\RatingController;
 use Modules\Client\app\Http\Controllers\TicketController;
 
 /*
@@ -21,3 +22,4 @@ Route::middleware(['auth:sanctum'])->prefix('client')->group(function () {
 });
 
 Route::resource('payment/raffle',PaymentTicketController::class);
+Route::resource('rating',RatingController::class);
