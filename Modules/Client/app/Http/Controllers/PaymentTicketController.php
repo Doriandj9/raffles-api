@@ -138,7 +138,16 @@ class PaymentTicketController extends Controller
                     'user' => $user,
                     'receipt' => $receipt,
                     'seller' => true
-                ],[],$this->copies);
+                ]);
+                $template = 'emails.payment-tickets-notify';
+                sendEmail($raffle->user->email,'Nuevo boleto vendido', $template,[
+                    'tickets' => $dataTickets,
+                    'raffle' => $raffle,
+                    'user' => $raffle->user,
+                    'receipt' => $receipt,
+                    'seller' => true
+                ]);
+
             } else {
                 $template = 'emails.payment-tickets';
                 sendEmail($user->email,'Compra de boletos HAYU24', $template,[
@@ -146,7 +155,15 @@ class PaymentTicketController extends Controller
                     'raffle' => $raffle,
                     'user' => $user,
                     'receipt' => $receipt,
-                ],[],$this->copies);
+                ]);
+
+                $template = 'emails.payment-tickets-notify';
+                sendEmail($raffle->user->email,'Nuevo boleto vendido', $template,[
+                    'tickets' => $dataTickets,
+                    'raffle' => $raffle,
+                    'user' => $raffle->user,
+                    'receipt' => $receipt
+                ]);
             }
             
             if($newUser){

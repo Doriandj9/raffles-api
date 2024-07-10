@@ -52,7 +52,13 @@ class RequestIncomeController extends Controller
                 'user' => $user,
                 'request_income' => $data,
                 'raffle' => $data->raffle
-            ],[],['infoeducas@gmail.com','guanipating@yahoo.es']);
+            ]);
+
+            sendEmail('guanipating@yahoo.es', 'Nueva solicitud de retiro de ingresos', $template,[
+                'user' => $user,
+                'request_income' => $data,
+                'raffle' => $data->raffle
+            ],[],['infoeducas@gmail.com']);
             DB::commit();
             return response_create($data);
         } catch (\Throwable $th) {
@@ -97,7 +103,14 @@ class RequestIncomeController extends Controller
                     'request_income' => $data,
                     'raffle' => $data->raffle,
                     'observation' => $request->observation
-                ],[],['infoeducas@gmail.com','guanipating@yahoo.es']);
+                ]);
+
+                sendEmail('guanipating@yahoo.es', 'Actualizacion de retiro de ingresos', $template,[
+                    'user' => $user,
+                    'request_income' => $data,
+                    'raffle' => $data->raffle,
+                    'observation' => $request->observation
+                ]);
             }
 
             DB::commit();
