@@ -64,7 +64,9 @@ class TicketController extends Controller
 
     public function showByUser($taxid){
         try {
-            $data = Ticket::where('user_taxid', $taxid)
+            $data = Ticket::where('tickets.user_taxid', $taxid)
+            ->join('raffles', 'raffles.id','=','tickets.raffles_id')
+            ->where('raffles.is_complete',false)
             ->get();
             return response_success($data);
         } catch (\Throwable $th) {

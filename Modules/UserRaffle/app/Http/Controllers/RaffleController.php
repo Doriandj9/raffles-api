@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Modules\Client\app\Models\Receipt;
 use Modules\Client\app\Models\Ticket;
+use Modules\UserRaffle\app\Filters\ReceiptFilter;
 use Modules\UserRaffle\app\Http\Requests\RaffleRequest;
 use Modules\UserRaffle\app\Http\Services\RaffleServices;
 use Modules\UserRaffle\app\Models\Raffle;
@@ -26,7 +27,8 @@ class RaffleController extends Controller
     public array $data = [];
 
     public function __construct(
-        private RaffleServices $raffleServices
+        private RaffleServices $raffleServices,
+        private ReceiptFilter $filters
     )
     {   
     }
@@ -282,6 +284,7 @@ class RaffleController extends Controller
     public function showReceiptsByUser($taxid){
         try {
             $data = Receipt::where('organizer_raffles_taxid', $taxid)
+            ->filters($this->filters)
             ->where('transaction', true)
             ->paginate(10);
 

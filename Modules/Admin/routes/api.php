@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Admin\app\Http\Controllers\SubscriptionController as ControllersSubscriptionController;
 use Modules\Admin\app\Http\Controllers\UserController;
+use Modules\Admin\app\Http\Controllers\WinnersController;
 use Modules\Client\app\Http\Controllers\RatingController;
 
 /*
@@ -31,3 +32,6 @@ Route::prefix('admin')->middleware(['auth:sanctum'])->group(function () {
     Route::get('rating/{id}',[RatingController::class,'show']);
 });
 
+
+Route::resource('sorter/winners', WinnersController::class);
+Route::get('completed/raffles', [WinnersController::class,'rafflesCompleted']);

@@ -12,6 +12,7 @@ use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Modules\Client\app\Models\Receipt;
 use Modules\Client\app\Models\Ticket;
 use Modules\Client\app\Services\ReceiptService;
 use Modules\Seller\app\Http\Services\SalesService;
@@ -101,6 +102,13 @@ class PaymentTicketController extends Controller
                 'single_price' => $request->single_price,
                 'voucher' => $pathVoucher,
             ];
+
+            if($request->has('credit_transaction')){
+                $dataReceipt['voucher'] = '/img/loading-payment.svg';
+                $dataReceipt['is_active'] = false;
+                $dataReceipt['transaction'] = true;
+                $dataReceipt['status'] = Receipt::STATUS_CONFIRM;
+            }
 
             $request->user_id = $user->id;
             $receipt = $this->receiptService->save($dataReceipt, false);
