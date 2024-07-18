@@ -35,3 +35,4 @@ Route::prefix('admin')->middleware(['auth:sanctum'])->group(function () {
 
 Route::resource('sorter/winners', WinnersController::class);
 Route::get('completed/raffles', [WinnersController::class,'rafflesCompleted']);
+Route::patch('completed/raffles/{id}', [WinnersController::class,'updateRaffleComplete']);
