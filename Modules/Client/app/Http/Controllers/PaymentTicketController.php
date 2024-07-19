@@ -104,6 +104,14 @@ class PaymentTicketController extends Controller
             ];
 
             if($request->has('credit_transaction')){
+                //caluclo de ventas
+                $iva = 0.15; //15%
+                $total = round(floatval($request->total),2);
+                $commissionPayphone = 0.05; //5%
+                $firstCommission = $commissionPayphone * $total;
+                $amount = $firstCommission + ($iva * $firstCommission);
+                $totalAmount = round($total - $amount,2);
+                $dataReceipt['total'] = $totalAmount;
                 $dataReceipt['voucher'] = '/img/loading-payment.svg';
                 $dataReceipt['is_active'] = false;
                 $dataReceipt['transaction'] = true;
@@ -208,8 +216,14 @@ class PaymentTicketController extends Controller
     }
 
     private function transactionCredit($raffle) {
+        $iva = 0.15; //15%
+        $total = round(floatval(request()->get('total')),2);
+        $commissionPayphone = 0.05; //5%
+        $firstCommission = $commissionPayphone * $total;
+        $amount = $firstCommission + ($iva * $firstCommission);
+        $totalAmount = round($total - $amount,2);
         $income = floatval($raffle->income);
-        $total =  floatval(request()->get('total'));
+        $total =  $totalAmount;
         $value =  round(($income  +  $total),2);
         $raffle->income = $value;
         $raffle->save();

@@ -285,6 +285,7 @@ class RaffleController extends Controller
         try {
             $data = Receipt::where('organizer_raffles_taxid', $taxid)
             ->filters($this->filters)
+            ->select('receipts.*')
             ->where('transaction', true)
             ->paginate(10);
 
