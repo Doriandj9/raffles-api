@@ -3,6 +3,7 @@
 namespace Modules\UserRaffle\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\CancelRaffle;
 use App\Jobs\CompleteRaffle;
 use App\Jobs\NewRaffle;
 use App\Jobs\Raffles;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Modules\Client\app\Models\Receipt;
 use Modules\Client\app\Models\Ticket;
+use Modules\Seller\app\Models\Commissions;
 use Modules\UserRaffle\app\Filters\ReceiptFilter;
 use Modules\UserRaffle\app\Http\Requests\RaffleRequest;
 use Modules\UserRaffle\app\Http\Services\RaffleServices;
@@ -354,6 +356,35 @@ class RaffleController extends Controller
             throw new ErrorException(Messages::NOT_PERMITE_MORE_RAFFLES);
         }
 
+    }
+
+    public function cancelRaffle(Request $request, $id){
+
+        try {
+            DB::beginTransaction();
+            $raffle = $this->raffleServices->findOrfail($id);
+
+            
+            if(!$raffle){
+                throw new ErrorException('Error no se encontro la rifa');
+            }
+
+            if($raffle->getCountSoldPorcent() >= 50){
+                throw new ErrorException('No se puede cancelar una rifa que tiene es igaul o mayor al 50% de boletos vendidos');
+            }
+
+            $raffle->is_active = false;
+            $raffle->doc_status = Commissions::STATUS_CANCEL;
+            $raffle->reason_cancel = $request->description;
+            $raffle->is_complete = true;
+            $raffle->save();
+            DB::commit();
+            CancelRaffle::dispatch($id,$request->description, $request->phone);
+            return \response_success([]); 
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response_error($th->getMessage());
+        }
     }
 
     private function validationsRaffesUpdate(): void

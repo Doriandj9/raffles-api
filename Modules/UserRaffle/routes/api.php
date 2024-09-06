@@ -43,6 +43,7 @@ Route::prefix('raffles')->middleware(['auth:sanctum'])->group(function () {
    Route::post('complete/{id}',[RaffleController::class,'complete']);
    Route::resource('income',RequestIncomeController::class);
    Route::get('me/income/{id}',[RequestIncomeController::class,'getForUser']);
+   Route::post('cancel/raffle/{id}',[RaffleController::class,'cancelRaffle']);
 });
 
 

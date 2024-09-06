@@ -34,7 +34,9 @@ class Raffle extends BaseModel
         'updated_by',
         'draw_parameters',
         'draw_details',
-        'in_sorter'
+        'in_sorter',
+        'doc_status',
+        'reason_cancel'
     ];
 
     protected $appends = ['purchased_tickets','pending_tickets','unsold_tickets'];
@@ -72,4 +74,17 @@ class Raffle extends BaseModel
         return RaffleFactory::new();
     }
 
+    public function getCountSoldPorcent(){
+        $ticketsA = Ticket::where('raffles_id',$this->id)
+        ->whereIn('is_buy',[true, false])
+        ->whereNotNull('user_taxid')
+        ->get();
+
+        $ticketsB = Ticket::where('raffles_id',$this->id)
+        ->get();
+
+        $porcent = round(($ticketsA->count() * 100) / $ticketsB->count(),2); 
+
+        return $porcent;
+    }
 }
